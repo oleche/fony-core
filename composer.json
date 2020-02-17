@@ -1,0 +1,26 @@
+{
+    "name": "geekcow/fony-core",
+    "type": "library",
+    "description": "Core classes for fony PHP API",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Oscar Leche",
+            "email": "oleche@geekcowsd.com",
+            "homepage": "http://www.oscarleche.com",
+            "role": "Developer"
+        }
+    ],
+    "autoload": {
+        "psr-4" : {
+            "Geekcow\\FonyCore\\" : "src/"
+        }
+    },
+    "require" : {
+        "geekcow/dbcore": "1.0.*",
+        "psr/log": "dev-master"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^8"
+    }
+}
