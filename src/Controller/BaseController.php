@@ -9,7 +9,6 @@ namespace Geekcow\FonyCore\Controller;
 use Geekcow\FonyCore\Controller\CoreController;
 
 use Geekcow\FonyCore\Utils\SessionUtils;
-include_once "helpers/allow.php";
 
 class BaseController extends CoreController
 {
@@ -22,7 +21,7 @@ class BaseController extends CoreController
   public function __construct($configfile = __DIR__ . "/src/config/config.ini"){
     parent::__construct($configfile);
     $this->response = array();
-    $this->session = new SessionUtils($this->app_secret);
+    $this->session = new SessionUtils($this->app_secret, $config_file);
     if (!$this->session->validate_bearer_token($_SERVER['HTTP_Authorization'])){
       $this->validation_fail = true;
       $this->response = $this->session->response;
