@@ -6,13 +6,13 @@
  */
 namespace Geekcow\FonyCore\Controller;
 
-use Geekcow\FonyCore\CoreController\BaseController;
-use Geekcow\FonyCore\CoreController\ApiMethods;
+use Geekcow\FonyCore\Controller\BaseController;
+use Geekcow\FonyCore\Controller\ApiMethods;
 use Geekcow\FonyCore\Helpers\AllowCore;
-use Geekcow\FonyCore\Controller\CoreController\GenericCreate;
-use Geekcow\FonyCore\Controller\CoreController\GenericGet;
-use Geekcow\FonyCore\Controller\CoreController\GenericPut;
-use Geekcow\FonyCore\Controller\CoreController\GenericDelete;
+use Geekcow\FonyCore\Controller\GenericOperations\GenericCreate;
+use Geekcow\FonyCore\Controller\GenericOperations\GenericGet;
+use Geekcow\FonyCore\Controller\GenericOperations\GenericPut;
+use Geekcow\FonyCore\Controller\GenericOperations\GenericDelete;
 
 class GenericController extends BaseController implements ApiMethods
 {

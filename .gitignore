@@ -1,3 +1,4 @@
 *.ini
 src/*.ini
 vendor/
+composer.lock
