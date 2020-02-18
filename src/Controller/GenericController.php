@@ -20,7 +20,7 @@ class GenericController extends BaseController implements ApiMethods
   private $form_endpoint;
   private $allowed_roles;
 
-  public function __construct($configfile = MY_DOC_ROOT . "/core/config.ini") {
+  public function __construct($configfile = __DIR__ . "/src/config/config.ini") {
 		parent::__construct($configfile);
     $this->allowed_roles = AllowCore::ADMINISTRATOR();
 	}

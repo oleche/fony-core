@@ -19,7 +19,7 @@ class BaseController extends CoreController
   public $response;
   public $pagination_link = "";
 
-  public function __construct($configfile = MY_DOC_ROOT . "/core/config.ini"){
+  public function __construct($configfile = __DIR__ . "/src/config/config.ini"){
     parent::__construct($configfile);
     $this->response = array();
     $this->session = new SessionUtils($this->app_secret);

@@ -32,7 +32,7 @@ abstract class CoreController
 
 	protected $file_url;
 
-  public function __construct($configfile = MY_DOC_ROOT . "/core/config.ini"){
+  public function __construct($configfile = __DIR__ . "/src/config/config.ini"){
 
 		$config = parse_ini_file($configfile);
 
@@ -42,7 +42,7 @@ abstract class CoreController
 		$this->file_url = $config['file_url'];
 		$this->site_url = $config['site_url'];
 
-		$this->api_form = new ApiForm();
+		$this->api_form = new ApiForm($configfile);
 	}
 
 	public function setRequest($request){
