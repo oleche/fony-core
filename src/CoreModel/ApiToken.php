@@ -9,7 +9,7 @@ use Geekcow\FonyCore\CoreModel\ApiUser;
 class ApiToken extends Entity{
   private $api_token;
 
-  public function __construct($configfile = MY_DOC_ROOT . "/core/config.ini"){
+  public function __construct($configfile = __DIR__ . "/src/config/config.ini"){
     $this->api_token = [
         'id' => [ 'type' => 'int', 'pk' => true ],
         'username' => [ 'type' => 'string', 'length' => 70, 'foreign' => array('username', new ApiUser()) ],

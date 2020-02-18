@@ -8,7 +8,7 @@ use Geekcow\FonyCore\CoreModel\ApiUserType;
 class ApiUser extends Entity{
   private $api_user;
 
-  public function __construct($configfile = MY_DOC_ROOT . "/core/config.ini"){
+  public function __construct($configfile = __DIR__ . "/src/config/config.ini"){
     $this->api_user = [
         'username' => [ 'type' => 'string', 'length' => 70, 'unique' => true, 'pk' => true ],
         'name' => [ 'type' => 'string', 'length' => 45, 'unique' => true ],

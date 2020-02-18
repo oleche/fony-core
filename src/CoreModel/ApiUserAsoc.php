@@ -9,7 +9,7 @@ use Geekcow\FonyCore\CoreModel\ApiClient;
 class ApiUserAsoc extends Entity{
   private $api_user_asoc;
 
-  public function __construct($configfile = MY_DOC_ROOT . "/core/config.ini"){
+  public function __construct($configfile = __DIR__ . "/src/config/config.ini"){
     $this->api_user_asoc = [
       'username' => [ 'type' => 'string', 'length' => 70, 'pk' => true, 'foreign' => array('username', new ApiUser()) ],
       'client_id' => [ 'type' => 'string', 'length' => 32, 'pk' => true, 'foreign' => array('client_id', new ApiClient()) ]
