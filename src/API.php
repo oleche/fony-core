@@ -6,6 +6,12 @@
  */
 namespace Geekcow\FonyCore;
 
+/**
+ * CORE API Class
+ *
+ * Orchestrates the functionality of the API
+ *
+ */
 abstract class API
 {
   /**
@@ -55,13 +61,23 @@ abstract class API
   */
   protected $action;
 
+  /**
+  * Property: core_action
+  * Linked to the action controller of the core components
+  */
+  protected $core_action;
+
 
   /**
-   * Constructor: __construct
-   * Allow for CORS, assemble and pre-process the data
+   * Constructor of the API core. Allows CORS, assemble and pre-process data
+   *
+   * @param Request   $where  Where something interesting takes place
+   *
+   * @throws Exception when an unexpected header for the request method appears.
+   *                   The only methods allowed here are POST, GET, PUT, DELETE and OPTIONS
    */
-  public function __construct($request) {
-    $this->_processHeaders();
+  public function __construct($request, $origin) {
+    $this->_processHeaders($origin);
 
     $this->args = explode('/', rtrim($request, '/'));
     $this->endpoint = array_shift($this->args);
@@ -74,6 +90,11 @@ abstract class API
     $this->_curateRequest();
   }
 
+  /**
+   * Executes the defined method registered in the child object and returns its response
+   *
+   * @return JSON object
+   */
   public function processAPI() {
     if ((int)method_exists($this, $this->endpoint) > 0) {
       return $this->_response($this->{$this->endpoint}($this->args), $this->response_code);
@@ -105,7 +126,7 @@ abstract class API
     return json_encode($data,JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
   }
 
-  private function _processHeaders(){
+  private function _processHeaders($origin){
     if(array_key_exists('HTTP_ACCESS_CONTROL_REQUEST_HEADERS', $_SERVER)) {
       header('Access-Control-Allow-Headers: '
              . $_SERVER['HTTP_ACCESS_CONTROL_REQUEST_HEADERS']);
@@ -183,30 +204,17 @@ abstract class API
     return ($status[$code])?$status[$code]:$status[500];
   }
 
-  protected function doDerivedCall(){
-    switch ($this->method) {
-      case 'PUT':
-        parse_str($this->file,$_POST);
-        $this->action->doPut($this->args, $this->verb, $this->file);
-        $this->response_code = $this->action->response['code'];
-        return $this->action->response;
-        break;
-      case 'DELETE':
-        $this->action->doDelete($this->args, $this->verb);
-        $this->response_code = $this->action->response['code'];
-        return $this->action->response;
-        break;
-      case 'OPTIONS':
-        exit(0);
-        break;
-      default:
-        $this->response_code = 405;
-        return "Invalid Method";
-        break;
+  /**
+     * Executes a standard processing of the allowed http methods based on the GenericController structure.
+     *
+     * @return OBJECT processed object from the controller
+     *
+     */
+  protected function _executesCall($coreAction = false){
+    if ($coreAction){
+      $this->action = $this->core_action;
     }
-  }
 
-  protected function doRegulaCall(){
     switch ($this->method) {
       case 'POST':
         $this->action->doPost($this->args, $this->verb);
