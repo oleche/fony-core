@@ -6,68 +6,72 @@
  */
 namespace Geekcow\FonyCore\Utils;
 
+use Geekcow\FonyCore\CoreModel\ApiUser;
 use Geekcow\FonyCore\CoreModel\ApiToken;
+use Geekcow\FonyCore\CoreModel\ApiUserAsoc;
+use Geekcow\FonyCore\Utils\TokenUtils;
 
 class SessionUtils {
   const BASIC = 'Basic ';
   const BEARER = 'Bearer ';
 
   protected $app_secret;
-  protected $token;
   protected $api_token;
+  protected $api_user_asoc;
+  protected $user;
   public $username;
   public $session_scopes;
-  public $session_token;
   public $err;
   public $response;
 
   public function __construct($app_secret, $config_file = MY_DOC_ROOT . "/src/config/config.ini"){
     $this->app_secret = $app_secret;
     $this->api_token = new ApiToken($config_file);
+    $this->api_user_asoc = new ApiUserAsoc($configfile);
+    $this->user = new ApiUser($configfile);
     $this->response = array();
 		$this->username = '';
   }
 
-  private function sanitize_token($token, $type){
-    $this->token = str_replace($type, '', $token);
-    return (strpos($token,$type) !== false);
+  /**
+   * Performs the login validation of the user and password
+   *
+   * @return BOOLEAN the user and password matches
+   *
+   */
+  public function validate_login($params=array()){
+    $params['email'] = md5($params['email']);
+    $result = array();
+    $pass = sha1($params['password']);
+    if ($this->user->fetch_id(array('username' => $params['email']),null,true," password = '$pass' AND enabled = 1 ")){
+      if ($this->api_user_asoc->fetch_id(array('client_id'=>$this->client_id,'username'=>$this->user->columns['username']))){
+        $this->username = trim($this->user->columns['username']);
+        return true;
+      }else{
+        $this->err = 'User not associated';
+        return false;
+      }
+    }else{
+      if ($this->user->fetch_id(array('username' => $params['email']),null,true," enabled = 0 ")){
+        $this->err = 'User disabled';
+        return false;
+      }else{
+        $this->err = 'Invalid Credentials';
+        return false;
+      }
+    }
   }
-
-  function base64_url_encode($input) {
-	 return strtr(base64_encode($input), '+/', '-_');
-	}
-
-	function base64_url_decode($input) {
-	 return base64_decode(strtr($input, '-_', '+/'));
-	}
 
   /**
-   * Returns an encrypted & utf8-encoded
+   * Validates if the token is active and valid then retrieves the scopes and username
+   *
+   * @return BOOLEAN the user and password matches
+   *
    */
-  function encrypt($pure_string, $encryption_key) {
-      $iv_size = openssl_cipher_iv_length('AES-128-ECB');
-      $iv = openssl_random_pseudo_bytes($iv_size);
-
-      $encrypted_string = openssl_encrypt(utf8_encode($pure_string), 'AES-128-ECB', $encryption_key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
-      return $encrypted_string;
-  }
-
-  /**
-   * Returns decrypted original string
-   */
-  function decrypt($encrypted_string, $encryption_key) {
-      $iv_size = openssl_cipher_iv_length('AES-128-ECB');
-      $iv = openssl_random_pseudo_bytes($iv_size);
-      $decrypted_string = openssl_encrypt ($encrypted_string , 'AES-128-ECB', $encryption_key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
-      return $decrypted_string;
-  }
-
-
   private function validate_token($token){
-    $this->session_token = $token;
     $result = $this->api_token->fetch("token = '$token' AND enabled = 1", false, array('updated_at'), false);
     if (count($result) == 1){
-      $token = $this->decrypt($this->base64_url_decode($this->token), $this->app_secret);
+      $token = TokenUtils::decrypt(TokenUtils::base64_url_decode($token), $this->app_secret);
       $token = explode(':', $token);
 
       if (count($token) == 4){
@@ -96,8 +100,9 @@ class SessionUtils {
 
   public function validate_bearer_token($token){
     try{
-      if ($this->sanitize_token($token, self::BEARER)){
-        if ($this->validate_token($this->token)){
+      $token = TokenUtils::sanitize_token($token, self::BEARER);
+      if (TokenUtils::validate_token_sanity($token, self::BEARER)){
+        if ($this->validate_token($token)){
           return true;
         }else{
           $this->response['type'] = 'error';

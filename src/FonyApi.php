@@ -8,6 +8,7 @@ namespace Geekcow\FonyCore;
 
 use Geekcow\FonyCore\API;
 use Geekcow\FonyCore\Controller\GenericController;
+use Geekcow\FonyCore\Controller\AuthController;
 
 /**
  * CORE API Implementation
@@ -61,8 +62,7 @@ class FonyApi extends API
         $this->core_action->setRequest($request);
         break;
       case 'auth':
-        $this->core_action = new GenericController($this->config_file);
-        // $this->core_action = new AuthController($this->config_file);
+        $this->core_action = new AuthController($this->config_file);
         $this->core_action->setRequest($request);
         break;
       default:
@@ -79,21 +79,20 @@ class FonyApi extends API
    *
    */
   protected function auth(){
-    return $this->_executesCall(true);
-    // switch ($this->method) {
-    //  case 'POST':
-    //    $this->core_action->doPost($_SERVER['HTTP_Authorization'], $_POST, $this->method);
-    //    $this->response_code = $this->core_action->response['code'];
-    //    return $this->core_action->response;
-    //    break;
-    //  case 'OPTIONS':
-    //    exit(0);
-    //    break;
-    //  default:
-    //    $this->response_code = 405;
-    //    return "Invalid method";
-    //    break;
-    // }
+    switch ($this->method) {
+     case 'POST':
+       $this->core_action->doPost($_SERVER['HTTP_Authorization'], $_POST, $this->method);
+       $this->response_code = $this->core_action->response['code'];
+       return $this->core_action->response;
+       break;
+     case 'OPTIONS':
+       exit(0);
+       break;
+     default:
+       $this->response_code = 405;
+       return "Invalid method";
+       break;
+    }
   }
 
   /**
