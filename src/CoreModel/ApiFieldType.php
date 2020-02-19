@@ -10,7 +10,7 @@ class ApiFieldType extends Entity{
       'regex' => [ 'type' => 'string', 'length' => 800 ]
   ];
 
-  public function __construct($configfile = __DIR__ . "/src/config/config.ini"){
+  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini"){
     parent::__construct($this->api_field_type, get_class($this), $configfile);
   }
 }

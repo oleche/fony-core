@@ -18,10 +18,10 @@ class BaseController extends CoreController
   public $response;
   public $pagination_link = "";
 
-  public function __construct($configfile = __DIR__ . "/src/config/config.ini"){
+  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini"){
     parent::__construct($configfile);
     $this->response = array();
-    $this->session = new SessionUtils($this->app_secret, $config_file);
+    $this->session = new SessionUtils($this->app_secret, $configfile);
     if (!$this->session->validate_bearer_token($_SERVER['HTTP_Authorization'])){
       $this->validation_fail = true;
       $this->response = $this->session->response;

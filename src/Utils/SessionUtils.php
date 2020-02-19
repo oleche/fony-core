@@ -21,7 +21,7 @@ class SessionUtils {
   public $err;
   public $response;
 
-  public function __construct($app_secret, $config_file = __DIR__ . "/src/config/config.ini"){
+  public function __construct($app_secret, $config_file = MY_DOC_ROOT . "/src/config/config.ini"){
     $this->app_secret = $app_secret;
     $this->api_token = new ApiToken($config_file);
     $this->response = array();

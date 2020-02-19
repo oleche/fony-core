@@ -9,7 +9,7 @@ class ApiForm extends Entity{
 
   private $api_form;
 
-  public function __construct($configfile = __DIR__ . "/src/config/config.ini"){
+  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini"){
     $this->api_form = [
        'id' => [ 'type' => 'int', 'pk' => true ],
        'endpoint' => [ 'type' => 'string', 'length' => 50 ],

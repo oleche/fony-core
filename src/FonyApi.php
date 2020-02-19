@@ -40,7 +40,7 @@ class FonyApi extends API
   protected $config_file;
   protected $exclude_core_actions;
 
-  public function __construct($request, $origin, $config_file = __DIR__ . "/src/config/config.ini") {
+  public function __construct($request, $origin, $config_file = MY_DOC_ROOT . "/src/config/config.ini") {
     parent::__construct($request, $origin);
 
     $this->config_file = $config_file;

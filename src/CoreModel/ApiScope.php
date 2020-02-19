@@ -10,7 +10,7 @@ class ApiScope extends Entity{
       'priority' => [ 'type' => 'int' ]
   ];
 
-  public function __construct($configfile = __DIR__ . "/src/config/config.ini"){
+  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini"){
     parent::__construct($this->api_scope, get_class($this), $configfile);
   }
 }

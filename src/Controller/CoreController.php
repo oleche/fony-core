@@ -32,7 +32,7 @@ abstract class CoreController
 
 	protected $file_url;
 
-  public function __construct($configfile = __DIR__ . "/src/config/config.ini"){
+  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini"){
 
 		$config = parse_ini_file($configfile);
 
