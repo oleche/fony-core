@@ -27,8 +27,8 @@ class SessionUtils {
   public function __construct($app_secret, $config_file = MY_DOC_ROOT . "/src/config/config.ini"){
     $this->app_secret = $app_secret;
     $this->api_token = new ApiToken($config_file);
-    $this->api_user_asoc = new ApiUserAsoc($configfile);
-    $this->user = new ApiUser($configfile);
+    $this->api_user_asoc = new ApiUserAsoc($config_file);
+    $this->user = new ApiUser($config_file);
     $this->response = array();
 		$this->username = '';
   }
