@@ -9,6 +9,7 @@ namespace Geekcow\FonyCore;
 use Geekcow\FonyCore\API;
 use Geekcow\FonyCore\Controller\GenericController;
 use Geekcow\FonyCore\Controller\AuthController;
+use Geekcow\FonyCore\Helpers\AllowCore;
 
 /**
  * CORE API Implementation
@@ -40,17 +41,18 @@ class FonyApi extends API
 {
   protected $config_file;
   protected $exclude_core_actions;
+  protected $allowed_core_roles;
 
   public function __construct($request, $origin, $config_file = MY_DOC_ROOT . "/src/config/config.ini") {
     parent::__construct($request, $origin);
 
     $this->config_file = $config_file;
     $this->exclude_core_actions = false;
+    $this->allowed_core_roles = AllowCore::ADMINISTRATOR();
 
     switch($this->endpoint){
       case 'user':
-        $this->core_action = new GenericController($this->config_file);
-        // $this->core_action = new UserController($this->config_file);
+        $this->core_action = new UserController($this->config_file);
         $this->core_action->setRequest($request);
         break;
       case 'client':
@@ -70,6 +72,11 @@ class FonyApi extends API
         $this->core_action->setRequest($request);
         break;
     }
+  }
+
+  public function setAllowedCoreRoles($role){
+    $this->allowed_core_roles = $role;
+    $this->core_action->setAllowedRoles($role);
   }
 
   /**

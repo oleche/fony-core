@@ -17,8 +17,6 @@ use Geekcow\FonyCore\Controller\GenericOperations\GenericDelete;
 class GenericController extends BaseController implements ApiMethods
 {
   private $model;
-  private $form_endpoint;
-  private $allowed_roles;
 
   public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini") {
 		parent::__construct($configfile);
@@ -106,14 +104,6 @@ class GenericController extends BaseController implements ApiMethods
 
   public function setModel($model){
     $this->model = $model;
-  }
-
-  public function setFormEndpoint($endpoint){
-    $this->form_endpoint = $endpoint;
-  }
-
-  public function setAllowedRoles($roles){
-    $this->allowed_roles = $roles;
   }
 
   private function validateArgsAndVerb($args, $verb){

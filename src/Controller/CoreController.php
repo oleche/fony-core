@@ -31,6 +31,8 @@ abstract class CoreController
 	private $api_form;
 
 	protected $file_url;
+	protected $allowed_roles;
+	protected $form_endpoint;
 
   public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini"){
 
@@ -48,6 +50,14 @@ abstract class CoreController
 	public function setRequest($request){
 		$this->request = $request;
 	}
+
+	public function setAllowedRoles($roles){
+    $this->allowed_roles = $roles;
+  }
+
+	public function setFormEndpoint($endpoint){
+    $this->form_endpoint = $endpoint;
+  }
 
 	/**
    * Validates the existence of a file.
