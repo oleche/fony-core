@@ -10,6 +10,8 @@ use Geekcow\FonyCore\API;
 use Geekcow\FonyCore\Controller\GenericController;
 use Geekcow\FonyCore\Controller\AuthController;
 use Geekcow\FonyCore\Helpers\AllowCore;
+use Geekcow\FonyCore\CoreModel\ApiScope;
+use Geekcow\FonyCore\CoreModel\ApiClient;
 
 /**
  * CORE API Implementation
@@ -58,10 +60,12 @@ class FonyApi extends API
       case 'client':
         $this->core_action = new GenericController($this->config_file);
         $this->core_action->setRequest($request);
+        $this->core_action->setModel(new ApiClient());
         break;
       case 'scope':
         $this->core_action = new GenericController($this->config_file);
         $this->core_action->setRequest($request);
+        $this->core_action->setModel(new ApiScope());
         break;
       case 'auth':
         $this->core_action = new AuthController($this->config_file);
