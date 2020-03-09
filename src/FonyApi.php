@@ -9,9 +9,11 @@ namespace Geekcow\FonyCore;
 use Geekcow\FonyCore\API;
 use Geekcow\FonyCore\Controller\GenericController;
 use Geekcow\FonyCore\Controller\AuthController;
+use Geekcow\FonyCore\Controller\UserController;
 use Geekcow\FonyCore\Helpers\AllowCore;
 use Geekcow\FonyCore\CoreModel\ApiScope;
 use Geekcow\FonyCore\CoreModel\ApiClient;
+use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 /**
  * CORE API Implementation
@@ -48,7 +50,7 @@ class FonyApi extends API
   public function __construct($request, $origin, $config_file = MY_DOC_ROOT . "/src/config/config.ini") {
     parent::__construct($request, $origin);
 
-    $this->config_file = $config_file;
+    $this->config_file = ConfigurationUtils::getInstance($config_file);
     $this->exclude_core_actions = false;
     $this->allowed_core_roles = AllowCore::ADMINISTRATOR();
 

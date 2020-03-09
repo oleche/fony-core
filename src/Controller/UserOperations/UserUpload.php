@@ -3,6 +3,7 @@ namespace Geekcow\FonyCore\Controller\UserOperations;
 use Geekcow\FonyCore\CoreModel\ApiUser;
 use Geekcow\FonyCore\CoreModel\ApiAssetType;
 use Geekcow\FonyCore\Helpers\AllowCore;
+use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 class UserUpload{
   private $user;
@@ -11,15 +12,15 @@ class UserUpload{
   private $id;
   private $validScope;
   private $username;
-  private $file_url;
+  private $config;
 
   public $response;
 
-  public function __construct($session, $id = null, $file_url = "test.com"){
+  public function __construct($session, $id = null){
     $this->user = new ApiUser();
     $this->assetType = new ApiAssetType();
     $this->validScope = AllowCore::ADMINISTRATOR();
-    $this->file_url = $file_url;
+    $this->config = ConfigurationUtils::getInstance();
     $this->response = array();
     $this->session = $session;
     $this->id = $id;
@@ -128,7 +129,7 @@ class UserUpload{
           $this->remove_asset($oldfile);
         }
 				$filepath = MY_ASSET_ROOT.'/'.$id.'/avatar'.$q_list[0]->columns['format'];
-				$filename = $this->file_url.'/'.$id."/avatar".$q_list[0]->columns['format'];
+				$filename = $this->config->getFileUrl().'/'.$id."/avatar".$q_list[0]->columns['format'];
 				$tip = $q_list[0];
 			}else{
         $this->response['type'] = 'alert';

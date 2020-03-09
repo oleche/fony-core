@@ -15,7 +15,6 @@ class SessionUtils {
   const BASIC = 'Basic ';
   const BEARER = 'Bearer ';
 
-  protected $app_secret;
   protected $api_token;
   protected $api_user_asoc;
   protected $user;
@@ -23,12 +22,13 @@ class SessionUtils {
   public $session_scopes;
   public $err;
   public $response;
+  private $config;
 
-  public function __construct($app_secret, $config_file = MY_DOC_ROOT . "/src/config/config.ini"){
-    $this->app_secret = $app_secret;
-    $this->api_token = new ApiToken($config_file);
-    $this->api_user_asoc = new ApiUserAsoc($config_file);
-    $this->user = new ApiUser($config_file);
+  public function __construct(){
+    $this->config = ConfigurationUtils::getInstance(MY_DOC_ROOT . "/src/config/config.ini")
+    $this->api_token = new ApiToken();
+    $this->api_user_asoc = new ApiUserAsoc();
+    $this->user = new ApiUser();
     $this->response = array();
 		$this->username = '';
   }
@@ -71,7 +71,7 @@ class SessionUtils {
   private function validate_token($token){
     $result = $this->api_token->fetch("token = '$token' AND enabled = 1", false, array('updated_at'), false);
     if (count($result) == 1){
-      $token = TokenUtils::decrypt(TokenUtils::base64_url_decode($token), $this->app_secret);
+      $token = TokenUtils::decrypt(TokenUtils::base64_url_decode($token), $this->config->getAppSecret());
       $token = explode(':', $token);
 
       if (count($token) == 4){

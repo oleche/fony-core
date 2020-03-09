@@ -22,12 +22,12 @@ class AuthController extends CoreController implements ApiMethods
 	public $username;
   public $email;
 
-  public function __construct($app_secret, $configfile = MY_DOC_ROOT . "/src/config/config.ini") {
+  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini") {
 		parent::__construct($configfile);
     $this->username = '';
 		$this->response = array();
 
-    $this->auth_handler = new AuthUtils($app_secret, $configfile);
+    $this->auth_handler = new AuthUtils($configfile);
 	}
 
   public function doPOST($token = null, $params = array()){

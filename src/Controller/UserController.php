@@ -14,12 +14,16 @@ use Geekcow\FonyCore\Controller\GenericOperations\GenericGet;
 use Geekcow\FonyCore\Controller\GenericOperations\GenericPut;
 use Geekcow\FonyCore\Controller\GenericOperations\GenericDelete;
 use Geekcow\FonyCore\Controller\UserOperations\UserCreate;
+use Geekcow\FonyCore\Controller\UserOperations\UserGetActions;
+use Geekcow\FonyCore\Controller\UserActions\UserGetActions;
+use Geekcow\FonyCore\Controller\UserActions\UserPutActions;
 
 use Geekcow\FonyCore\CoreModel\ApiUser;
+use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 class UserController extends BaseController implements ApiMethods
 {
-  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini") {
+  public function __construct($configfile = ConfigurationUtils::getInstance(MY_DOC_ROOT . "/src/config/config.ini")) {
 		parent::__construct($configfile);
 	}
 
@@ -48,26 +52,10 @@ class UserController extends BaseController implements ApiMethods
     if (!$this->validation_fail)
     {
       if (is_array($args) && empty($args)){
-        if ($verb == 'count'){
-          $model = new ApiUser();
-          $user_count = new GenericCount($model, $this->session);
-          $user_count->setValidScope($this->allowed_roles);
-          $user_count->getCount();
-          $this->response = $user_count->response;
-        } elseif ($verb == 'countgroup'){
-          $model = new ApiUser();
-          $user_count = new GenericCount($model, $this->session);
-          $user_count->setGroupingArray(array('created_at' => 'DAY(created_at)'));
-          $user_count->setValidScope($this->allowed_roles);
-          $user_count->setTotal(false);
-          $user_count->getCount(true);
-          $this->response = $user_count->response;
-        } else {
-          $user_get = new UserGet($this->session, $verb);
-          $user_get->getUser();
-          $this->response = $user_get->response;
-          $this->pagination_link = $user_get->getPaginationLink();
-        }
+        $this->setExecutableClass(new UserGetActions());
+        $this->setActionVerb($verb);
+        $this->setActionId($verb);
+        $this->execute();
       }else{
         $this->response['type'] = 'error';
         $this->response['title'] = 'User';
@@ -87,50 +75,16 @@ class UserController extends BaseController implements ApiMethods
   public function doPUT($args = array(), $verb = null, $file = null) {
     if (!$this->validation_fail)
     {
+      $user_put_actions = new UserPutActions();
+      $user_put_actions->setFile($file);
+      $this->setExecutableClass($user_put_actions);
       if (is_array($args) && empty($args)){
-        if ($this->validate_fields($_POST, 'api/user/:id', 'PUT')){
-          $user_put = new UserPut($this->session, $verb);
-          $user_put->setValidScope($this->allowed_roles);
-          $user_put->putUser();
-          $this->response = $user_put->response;
-        }
+        $this->setActionId($verb);
+        $this->execute();
       }else{
-        switch ($args[0]) {
-          case 'upload':
-            if ($this->validate_upload($file)){
-              $user_put = new UserUpload($this->session, $verb, $this->file_url);
-              $user_put->setValidScope($this->allowed_roles);
-              $user_put->put($file);
-              $this->response = $user_put->response;
-            }
-            break;
-          case 'password':
-            if ($this->validate_fields($_POST, 'api/user/:id/password', 'PUT')){
-              $status_put = new UserPut($this->session, $verb);
-              $status_put->setValidScope($this->allowed_roles);
-              $status_put->changePassword();
-              $this->response = $status_put->response;
-            }
-            break;
-          case 'enable':
-            $status_put = new UserPut($this->session, $verb);
-            $status_put->setValidScope($this->allowed_roles);
-            $status_put->enable();
-            $this->response = $status_put->response;
-            break;
-          case 'disable':
-            $status_put = new UserPut($this->session, $verb);
-            $status_put->setValidScope($this->allowed_roles);
-            $status_put->disable();
-            $this->response = $status_put->response;
-            break;
-          default:
-            $this->response['type'] = 'error';
-            $this->response['title'] = 'User';
-            $this->response['code'] = 404;
-            $this->response['message'] = "Invalid URL";
-            break;
-        }
+        $this->setActionId($verb);
+        $this->setActionVerb($args[0]);
+        $this->execute(true);
       }
     }
 

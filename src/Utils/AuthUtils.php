@@ -7,6 +7,7 @@
 namespace Geekcow\FonyCore\Utils;
 
 use Geekcow\FonyCore\Utils\TokenUtils;
+use Geekcow\FonyCore\Utils\ConfigurationUtils;
 use Geekcow\FonyCore\CoreModel\ApiScope;
 use Geekcow\FonyCore\CoreModel\ApiToken;
 use Geekcow\FonyCore\CoreModel\ApiClient;
@@ -26,14 +27,16 @@ class AuthUtils {
   private $username;
   private $asoc;
   private $_scopes;
+  private $config;
 
-  public function __construct($app_secret, $configfile = MY_DOC_ROOT . "/src/config/config.ini") {
-    $this->api_client = new ApiClient($configfile);
-    $this->api_client_scope = new ApiClientScope($configfile);
-    $this->api_token = new ApiToken($configfile);
-    $this->scope = new ApiScope($configfile);
+  public function __construct() {
+    $this->config = ConfigurationUtils::getInstance();
+    $this->api_client = new ApiClient();
+    $this->api_client_scope = new ApiClientScope();
+    $this->api_token = new ApiToken();
+    $this->scope = new ApiScope();
 
-    $this->session_handler = new SessionUtils($app_secret, $configfile);
+    $this->session_handler = new SessionUtils();
 
   }
 
@@ -137,7 +140,7 @@ class AuthUtils {
 			return $this->api_token->columns['token'];
 		}else{
       $timestamp = time();
-      $token = TokenUtils::encrypt($this->client_id.':'.$timestamp.':'.$this->_scopes.':'.$this->username,$this->app_secret);
+      $token = TokenUtils::encrypt($this->client_id.':'.$timestamp.':'.$this->_scopes.':'.$this->username,$this->config->getAppSecret());
       $token = TokenUtils::base64_url_encode($token);
       $this->api_token->columns['token'] = $token;
       $this->api_token->columns['username'] = $this->username;
@@ -178,7 +181,7 @@ class AuthUtils {
 		foreach ($result as $r) {
 			if (count($result) > 0){
 				$token = $result[0]->columns['token'];
-				$token = $this->decrypt(TokenUtils::base64_url_decode($token), $this->app_secret);
+				$token = $this->decrypt(TokenUtils::base64_url_decode($token), $this->config->getAppSecret());
 				$token = explode(':', $token);
 				$token[2] = (string)$token[2];
 				$token[3] = (string)$token[3];

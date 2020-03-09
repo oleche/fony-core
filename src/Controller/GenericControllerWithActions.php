@@ -15,7 +15,7 @@ use Geekcow\FonyCore\Controller\GenericOperations\GenericPut;
 use Geekcow\FonyCore\Controller\GenericOperations\GenericDelete;
 use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
-class GenericController extends BaseController implements ApiMethods
+class GenericControllerWithActions extends BaseController implements ApiMethods
 {
   private $model;
 

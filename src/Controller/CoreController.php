@@ -7,21 +7,17 @@
 namespace Geekcow\FonyCore\Controller;
 
 use Geekcow\FonyCore\CoreModel\ApiForm;
+use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 abstract class CoreController
 {
-	protected $ipp;
-	protected $app_secret;
-	protected $site_url;
-
+	// protected $ipp;
 	protected $request;
 
 	private $connection;
 
   //controller vars
   public $pagination_link = "";
-  public $page;
-  public $per_page;
 
 	//response information
 	public $err;
@@ -30,21 +26,11 @@ abstract class CoreController
 	//internalDB
 	private $api_form;
 
-	protected $file_url;
 	protected $allowed_roles;
 	protected $form_endpoint;
 
-  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini"){
-
-		$config = parse_ini_file($configfile);
-
-		$this->app_secret = $config['app_secret'];
-
-		$this->ipp = $config['ipp'];
-		$this->file_url = $config['file_url'];
-		$this->site_url = $config['site_url'];
-
-		$this->api_form = new ApiForm($configfile);
+  public function __construct(){
+		$this->api_form = new ApiForm();
 	}
 
 	public function setRequest($request){
