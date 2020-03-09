@@ -2,6 +2,7 @@
 namespace Geekcow\FonyCore\CoreModel;
 
 use \Geekcow\Dbcore\Entity;
+use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 class ApiUserType extends Entity{
   private $api_user_type = [

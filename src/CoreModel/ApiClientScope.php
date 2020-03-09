@@ -2,7 +2,7 @@
 namespace Geekcow\FonyCore\CoreModel;
 
 use \Geekcow\Dbcore\Entity;
-
+use Geekcow\FonyCore\Utils\ConfigurationUtils;
 use Geekcow\FonyCore\CoreModel\ApiClient;
 use Geekcow\FonyCore\CoreModel\ApiScope;
 
