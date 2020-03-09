@@ -32,7 +32,7 @@ class AuthController extends CoreController implements ApiMethods
 
   public function doPOST($token = null, $params = array()){
 		try{
-      if (is_array($args) && empty($args)){
+      if (is_array($params) && empty($params)){
         if ($verb == 'refresh'){
           //TODO Refresh token
           $this->response['code'] = 501;
