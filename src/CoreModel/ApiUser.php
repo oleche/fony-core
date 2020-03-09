@@ -8,7 +8,8 @@ use Geekcow\FonyCore\CoreModel\ApiUserType;
 class ApiUser extends Entity{
   private $api_user;
 
-  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini"){
+  public function __construct($config_file = MY_DOC_ROOT . "/src/config/config.ini"){
+    $config = ConfigurationUtils::getInstance($config_file);
     $this->api_user = [
         'username' => [ 'type' => 'string', 'length' => 70, 'unique' => true, 'pk' => true ],
         'name' => [ 'type' => 'string', 'length' => 45, 'unique' => true ],
@@ -25,7 +26,7 @@ class ApiUser extends Entity{
         'updated_at' => [ 'type' => 'datetime' ],
         'type' => [ 'type' => 'int', 'foreign' => array('id', new ApiUserType())]
     ];
-    parent::__construct($this->api_user, get_class($this), $configfile);
+    parent::__construct($this->api_user, get_class($this), $config->getFilename());
   }
 }
 

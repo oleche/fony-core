@@ -11,8 +11,9 @@ class ApiUserType extends Entity{
       'scope' => [ 'type' => 'string', 'length' => 45, 'unique' => true ]
   ];
 
-  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini"){
-    parent::__construct($this->api_user_type, get_class($this), $configfile);
+  public function __construct($config_file = MY_DOC_ROOT . "/src/config/config.ini"){
+    $config = ConfigurationUtils::getInstance($config_file);
+    parent::__construct($this->api_user_type, get_class($this), $config->getFilename());
   }
 }
 

@@ -25,7 +25,7 @@ class SessionUtils {
   private $config;
 
   public function __construct(){
-    $this->config = ConfigurationUtils::getInstance(MY_DOC_ROOT . "/src/config/config.ini")
+    $this->config = ConfigurationUtils::getInstance(MY_DOC_ROOT . "/src/config/config.ini");
     $this->api_token = new ApiToken();
     $this->api_user_asoc = new ApiUserAsoc();
     $this->user = new ApiUser();

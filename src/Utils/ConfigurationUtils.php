@@ -50,7 +50,7 @@ class ConfigurationUtils {
   {
     if (self::$instance == null)
     {
-      self::$instance = new SessionUtils($configfile);
+      self::$instance = new ConfigurationUtils($configfile);
     }
 
     return self::$instance;

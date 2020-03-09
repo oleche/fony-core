@@ -9,7 +9,8 @@ class ApiForm extends Entity{
 
   private $api_form;
 
-  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini"){
+  public function __construct($config_file = MY_DOC_ROOT . "/src/config/config.ini"){
+    $config = ConfigurationUtils::getInstance($config_file);
     $this->api_form = [
        'id' => [ 'type' => 'int', 'pk' => true ],
        'endpoint' => [ 'type' => 'string', 'length' => 50 ],
@@ -22,7 +23,7 @@ class ApiForm extends Entity{
        'scopes' => [ 'type' => 'string', 'length' => 500 ],
        'method' => [ 'type' => 'string', 'length' => 10 ]
     ];
-    parent::__construct($this->api_form, get_class($this), $configfile);
+    parent::__construct($this->api_form, get_class($this), $config->getFilename());
   }
 }
 
