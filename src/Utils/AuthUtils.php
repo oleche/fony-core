@@ -75,7 +75,7 @@ class AuthUtils {
    * @return BOOLEAN if found and assigns the client_id, email, username and asociation status
    *
    */
-  public function validate_basic($params = array(), $token){
+  public function validateBasic($params = array(), $token){
     $token64 = base64_decode($token);
     $tokens = explode(":", $token64);
     $result = $this->api_client->fetch("client_id = '$tokens[0]' AND client_secret = '$tokens[1]' AND enabled = 1");
@@ -98,7 +98,7 @@ class AuthUtils {
    * @return BOOLEAN if found
    *
    */
-  public function validate_scopes($method){
+  public function validateScopes($method){
     $retval = true;
 
     $scopes_arr = explode(',', $this->_scopes);
@@ -135,13 +135,13 @@ class AuthUtils {
    * @return TOKEN if found or created, or FALSE if error
    *
    */
-  public function generate_token(){
-		if ($this->locate_valid_token()){
+  public function generateToken(){
+		if ($this->locateValidToken()){
 			return $this->api_token->columns['token'];
 		}else{
       $timestamp = time();
       $token = TokenUtils::encrypt($this->client_id.':'.$timestamp.':'.$this->_scopes.':'.$this->username,$this->config->getAppSecret());
-      $token = TokenUtils::base64_url_encode($token);
+      $token = TokenUtils::base64UrlEncode($token);
       $this->api_token->columns['token'] = $token;
       $this->api_token->columns['username'] = $this->username;
       $this->api_token->columns['created_at'] = strtotime("now");
@@ -175,13 +175,13 @@ class AuthUtils {
    * @return BOOLEAN if found or created
    *
    */
-  private function locate_valid_token(){
+  private function locateValidToken(){
 		$result = $this->api_token->fetch("client_id = '$this->client_id' AND username = '$this->username'", false, array('updated_at'), false);
 		$last = false;
 		foreach ($result as $r) {
 			if (count($result) > 0){
 				$token = $result[0]->columns['token'];
-				$token = $this->decrypt(TokenUtils::base64_url_decode($token), $this->config->getAppSecret());
+				$token = $this->decrypt(TokenUtils::base64UrlDecode($token), $this->config->getAppSecret());
 				$token = explode(':', $token);
 				$token[2] = (string)$token[2];
 				$token[3] = (string)$token[3];
@@ -224,8 +224,8 @@ class AuthUtils {
    * @return BOOLEAN the user and password matches
    *
    */
-	private function validate_login($params=array()){
-      if ($this->session_handler->validate_login($params)){
+	private function validateLogin($params=array()){
+      if ($this->session_handler->validateLogin($params)){
         $this->username = $this->session_handler->username;
         return true;
       }else{

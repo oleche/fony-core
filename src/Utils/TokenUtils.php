@@ -7,19 +7,19 @@
 namespace Geekcow\FonyCore\Utils;
 
 class TokenUtils {
-  public static function sanitize_token($token, $type){
+  public static function sanitizeToken($token, $type){
     return str_replace($type, '', $token);
   }
 
-  public static function validate_token_sanity($token, $type){
+  public static function validateTokenSanity($token, $type){
     return (strpos($token, $type) !== false);
   }
 
-  public static function base64_url_encode($input) {
+  public static function base64UrlEncode($input) {
    return strtr(base64_encode($input), '+/', '-_');
   }
 
-  public static function base64_url_decode($input) {
+  public static function base64UrlDecode($input) {
    return base64_decode(strtr($input, '-_', '+/'));
   }
 

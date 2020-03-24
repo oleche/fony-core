@@ -12,6 +12,7 @@ use Geekcow\FonyCore\CoreModel\ApiClient;
 use Geekcow\FonyCore\CoreModel\ApiUserType;
 use Geekcow\FonyCore\CoreModel\ApiUserAsoc;
 use Geekcow\FonyCore\CoreModel\ApiClientScope;
+use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 class UserCreate
 {
@@ -27,10 +28,9 @@ class UserCreate
   //THE USER TOKEN IS THE CLIENT ASSOCIATED TO GENERATE LOGIN OPERATIONS
   private $user_token = '';
 
-  public function __construct($allowed_roles, $configfile = MY_DOC_ROOT . "/src/config/config.ini"){
-    $config = parse_ini_file($configfile);
-
-    $this->user_token = $config['user_token'];
+  public function __construct($allowed_roles){
+    $config = ConfigurationUtils::getInstance();
+    $this->user_token = $config->getUserClient();
 
     $this->user = new ApiUser();
     $this->user_type = new ApiUserType();

@@ -42,13 +42,13 @@ class AuthController extends CoreController implements ApiMethods
           $this->response['msg'] = "Not Implemented";
         }
       }else{
-        $token = TokenUtils::sanitize_token($token, self::BASIC);
-        if (TokenUtils::validate_token_sanity($token, self::BASIC)){
+        $token = TokenUtils::sanitizeToken($token, self::BASIC);
+        if (TokenUtils::validateTokenSanity($token, self::BASIC)){
           $this->auth_handler->setScopes((isset($params['scope']) && $params['scope'] != '')?$params['scope']:'');
-      		if ($this->auth_handler->validate_basic($params) && $this->auth_handler->validate_scopes()){
+      		if ($this->auth_handler->validateBasic($params) && $this->auth_handler->validateScopes()){
             if ($this->auth_handler->getAsoc() == 1){
               if ($this->validate_fields($params, 'login', 'POST')){
-                if (!$this->auth_handler->validate_login($params)){
+                if (!$this->auth_handler->validateLogin($params)){
                   $this->buildErrorSet();
           				return false;
                 }
@@ -58,7 +58,7 @@ class AuthController extends CoreController implements ApiMethods
             }
 
     				$this->response['code'] = 200;
-    				$this->response['access_token'] = $this->auth_handler->generate_token();
+    				$this->response['access_token'] = $this->auth_handler->generateToken();
             $this->response['token_type'] = 'bearer';
             $this->response['username'] = $this->auth_handler->getUsername();
     				$this->response['expires'] = ((time($this->auth_handler->getApiToken()->columns['updated_at'])*1000)+$this->auth_handler->getApiToken()->columns['expires']) - (time()*1000);

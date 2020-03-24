@@ -39,7 +39,7 @@ class SessionUtils {
    * @return BOOLEAN the user and password matches
    *
    */
-  public function validate_login($params=array()){
+  public function validateLogin($params=array()){
     $params['email'] = md5($params['email']);
     $result = array();
     $pass = sha1($params['password']);
@@ -68,10 +68,10 @@ class SessionUtils {
    * @return BOOLEAN the user and password matches
    *
    */
-  private function validate_token($token){
+  private function validateToken($token){
     $result = $this->api_token->fetch("token = '$token' AND enabled = 1", false, array('updated_at'), false);
     if (count($result) == 1){
-      $token = TokenUtils::decrypt(TokenUtils::base64_url_decode($token), $this->config->getAppSecret());
+      $token = TokenUtils::decrypt(TokenUtils::base64UrlDecode($token), $this->config->getAppSecret());
       $token = explode(':', $token);
 
       if (count($token) == 4){
@@ -98,11 +98,11 @@ class SessionUtils {
     }
   }
 
-  public function validate_bearer_token($token){
+  public function validateBearerToken($token){
     try{
-      $token = TokenUtils::sanitize_token($token, self::BEARER);
-      if (TokenUtils::validate_token_sanity($token, self::BEARER)){
-        if ($this->validate_token($token)){
+      $token = TokenUtils::sanitizeToken($token, self::BEARER);
+      if (TokenUtils::validateTokenSanity($token, self::BEARER)){
+        if ($this->validateToken($token)){
           return true;
         }else{
           $this->response['type'] = 'error';
