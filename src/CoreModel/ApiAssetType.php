@@ -11,7 +11,7 @@ class ApiAssetType extends Entity{
     $config = ConfigurationUtils::getInstance($config_file);
 
     $this->api_asset_type = [
-        'id' => [ 'type' => 'int', 'unique' => true, 'pk' => true ],
+        'id' => [ 'type' => 'int', 'unique' => true, 'pk' => true, 'incremental' => true ],
         'name' => [ 'type' => 'string', 'length' => 200, 'postable' => true ],
         'format' => [ 'type' => 'string', 'length' => 500, 'postable' => true ],
         'max_size' => [ 'type' => 'int', 'postable' => true ],

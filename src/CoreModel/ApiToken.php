@@ -12,7 +12,7 @@ class ApiToken extends Entity{
   public function __construct($config_file = __DIR__ . "/src/config/config.ini"){
     $config = ConfigurationUtils::getInstance($config_file);
     $this->api_token = [
-        'id' => [ 'type' => 'int', 'pk' => true ],
+        'id' => [ 'type' => 'int', 'pk' => true, 'incremental' => true ],
         'username' => [ 'type' => 'string', 'length' => 70, 'foreign' => array('username', new ApiUser()) ],
         'token' => [ 'type' => 'string', 'length' => 128 ],
         'created_at' => [ 'type' => 'datetime' ],

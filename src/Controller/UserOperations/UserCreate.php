@@ -141,7 +141,7 @@ class UserCreate
       return false;
     }
 		$client = sha1($user->columns['username'].$user->columns['email'].date("Y-m-d H:i:s"));
-		$secret = sha1($client.'SECRETKEY');
+		$secret = sha1($client.$config->getAppSecret());
   	$this->api_client->columns['client_id'] = $client;
     $this->api_client->columns['client_secret'] = $secret;
 		$this->api_client->columns['email'] = $user->columns['email'];

@@ -12,7 +12,7 @@ class ApiForm extends Entity{
   public function __construct($config_file = MY_DOC_ROOT . "/src/config/config.ini"){
     $config = ConfigurationUtils::getInstance($config_file);
     $this->api_form = [
-       'id' => [ 'type' => 'int', 'pk' => true ],
+       'id' => [ 'type' => 'int', 'pk' => true, 'incremental' => true ],
        'endpoint' => [ 'type' => 'string', 'length' => 50 ],
        'field' => [ 'type' => 'string', 'length' => 75 ],
        'id_type' => [ 'type' => 'int', 'foreign' => array('id', new ApiFieldType())],

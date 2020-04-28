@@ -14,7 +14,6 @@ use Geekcow\FonyCore\Controller\GenericOperations\GenericGet;
 use Geekcow\FonyCore\Controller\GenericOperations\GenericPut;
 use Geekcow\FonyCore\Controller\GenericOperations\GenericDelete;
 use Geekcow\FonyCore\Controller\UserOperations\UserCreate;
-use Geekcow\FonyCore\Controller\UserOperations\UserGetActions;
 use Geekcow\FonyCore\Controller\UserActions\UserGetActions;
 use Geekcow\FonyCore\Controller\UserActions\UserPutActions;
 
@@ -23,8 +22,9 @@ use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 class UserController extends BaseController implements ApiMethods
 {
-  public function __construct($configfile = ConfigurationUtils::getInstance(MY_DOC_ROOT . "/src/config/config.ini")) {
-		parent::__construct($configfile);
+  public function __construct() {
+    $configfile = ConfigurationUtils::getInstance(MY_DOC_ROOT . "/src/config/config.ini");
+    parent::__construct($configfile);
 	}
 
   //CREATE
@@ -35,6 +35,9 @@ class UserController extends BaseController implements ApiMethods
         if ($this->validate_fields($_POST, 'api/user', 'POST')){
           $user_create = new UserCreate($this->allowed_roles);
           $user_create->createUser($this->session->session_scopes);
+          //TODO: Broadcaster idea: allow the controller to implement classes that will serve as broadcasters that react after the execution of each call.
+          //It should also be implemented in the execute() method.
+          //$this-broadcast();
           $this->response = $user_create->response;
         }
       }else{

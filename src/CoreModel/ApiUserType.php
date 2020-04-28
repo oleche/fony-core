@@ -6,7 +6,7 @@ use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 class ApiUserType extends Entity{
   private $api_user_type = [
-      'id' => [ 'type' => 'int', 'unique' => true, 'pk' => true ],
+      'id' => [ 'type' => 'int', 'unique' => true, 'pk' => true, 'incremental' => true ],
       'name' => [ 'type' => 'string', 'length' => 32, 'unique' => true ],
       'priority' => [ 'type' => 'int', 'unique' => true ],
       'scope' => [ 'type' => 'string', 'length' => 45, 'unique' => true ]

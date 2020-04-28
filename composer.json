@@ -28,7 +28,6 @@
     },
     "scripts": {
         "auto-scripts": {
-          "create-core-user": "Geekcow\\FonyCore\\Installer\\UserCreation::createCore",
           "setup": "Geekcow\\FonyCore\\Installer\\Setup::init"
         },
         "post-install-cmd": [

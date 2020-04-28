@@ -18,7 +18,7 @@ class ApiUser extends Entity{
         'avatar' => [ 'type' => 'text', 'nullable' => true ],
         'avatar_path' => [ 'type' => 'text', 'nullable' => true ],
         'phone' => [ 'type' => 'string', 'length' => 32 ],
-        'password' => [ 'type' => 'string', 'length' => 32 ],
+        'password' => [ 'type' => 'string', 'length' => 64 ],
         'enabled' => [ 'type' => 'boolean'],
         'verified' => [ 'type' => 'boolean'],
         'verification' => [ 'type' => 'string', 'length' => 32 ],

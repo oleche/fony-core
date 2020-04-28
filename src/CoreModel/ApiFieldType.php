@@ -6,7 +6,7 @@ use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 class ApiFieldType extends Entity{
   private $api_field_type = [
-      'id' => [ 'type' => 'int', 'pk' => true ],
+      'id' => [ 'type' => 'int', 'pk' => true, 'incremental' => true ],
       'name' => [ 'type' => 'string', 'length' => 75 ],
       'regex' => [ 'type' => 'string', 'length' => 800 ]
   ];

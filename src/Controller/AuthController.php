@@ -22,7 +22,8 @@ class AuthController extends CoreController implements ApiMethods
 	public $username;
   public $email;
 
-  public function __construct($configfile = MY_DOC_ROOT . "/src/config/config.ini") {
+  public function __construct() {
+    $configfile = ConfigurationUtils::getInstance(MY_DOC_ROOT . "/src/config/config.ini");
 		parent::__construct($configfile);
     $this->username = '';
 		$this->response = array();

@@ -6,10 +6,14 @@
  */
 namespace Geekcow\FonyCore\Installer;
 
+define('MY_DOC_ROOT', __DIR__);
+
 use Composer\Script\Event;
 use Composer\Installer\PackageEvent;
 use Composer\Factory;
 use Composer\IO\NullIO;
+use Geekcow\FonyCore\Installer\User\UserCreation;
+use Geekcow\FonyCore\Installer\User\DatabaseMaintenance;
 use Geekcow\FonyCore\Installer\ConfigurationConfigurer;
 
 class Setup {
@@ -100,10 +104,10 @@ class Setup {
 
     $encodedUser = md5($username);
     $client = sha1($encodedUser.$username.date("Y-m-d H:i:s"));
-		$secret = sha1($client.'SECRETKEY');
+		$secret_key = sha1($client.$secret);
     $configurer->changeGroup('fony');
     $configurer->setField('fony.user_client', $client);
-    $configurer->setField('fony.user_secret', $secret);
+    $configurer->setField('fony.user_secret', $secret_key);
 
     $configurer->export();
 
@@ -116,7 +120,20 @@ class Setup {
 
     echo 'Build default database (y/Y/n/N): [y]: ';
     $build_default = Setup::getInput("y");
+    $build_default = trim(strtolower($build_default));
     echo PHP_EOL;
+
+    if ($build_default == "y"){
+      //create the default values in the database
+      $dbmaintenance = new DatabaseMaintenance();
+      $dbmaintenance->create();
+    }
+
+    //Create user
+    $userMgmt = new UserCreation();
+    $userMgmt->create($client, $secret_key, $username, $password, $secret);
+
+    //Create folder structure
 
     //var_dump($event->getArguments());
   }
