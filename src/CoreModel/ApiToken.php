@@ -18,7 +18,7 @@ class ApiToken extends Entity{
         'created_at' => [ 'type' => 'datetime' ],
         'expires' => [ 'type' => 'int' ],
         'enabled' => [ 'type' => 'boolean' ],
-        'client_id' => [ 'type' => 'string', 'length' => 32, 'pk' => true, 'foreign' => array('client_id', new ApiClient()) ],
+        'client_id' => [ 'type' => 'string', 'length' => 64, 'pk' => true, 'foreign' => array('client_id', new ApiClient()) ],
         'updated_at' => [ 'type' => 'datetime' ],
         'scopes' => [ 'type' => 'string', 'length' => 250 ],
         'timestamp' => [ 'type' => 'string', 'length' => 128 ],

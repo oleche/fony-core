@@ -11,8 +11,8 @@ class ApiClient extends Entity{
   public function __construct($config_file = MY_DOC_ROOT . "/src/config/config.ini"){
     $config = ConfigurationUtils::getInstance($config_file);
     $this->api_client = [
-        'client_id' => [ 'type' => 'string', 'length' => 32, 'pk' => true ],
-        'client_secret' => [ 'type' => 'string', 'length' => 32 ],
+        'client_id' => [ 'type' => 'string', 'length' => 64, 'pk' => true ],
+        'client_secret' => [ 'type' => 'string', 'length' => 64 ],
         'email' => [ 'type' => 'string' ],
         'user_id' => [ 'type' => 'string', 'length' => 70, 'foreign' => array('username', new ApiUser()) ],
         'created_at' => [ 'type' => 'datetime' ],

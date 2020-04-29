@@ -13,7 +13,7 @@ class ApiClientScope extends Entity{
     $config = ConfigurationUtils::getInstance($config_file);
     $this->api_client_scope = [
         'id_scope' => [ 'type' => 'string', 'length' => 32, 'pk' => true, 'foreign' => array('name', new ApiScope()) ],
-        'id_client' => [ 'type' => 'string', 'length' => 32, 'pk' => true, 'foreign' => array('client_id', new ApiClient()) ]
+        'id_client' => [ 'type' => 'string', 'length' => 64, 'pk' => true, 'foreign' => array('client_id', new ApiClient()) ]
     ];
     parent::__construct($this->api_client_scope, get_class($this), $config->getFilename());
   }
