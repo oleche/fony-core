@@ -25,18 +25,5 @@
     },
     "require-dev": {
         "phpunit/phpunit": "^8"
-    },
-    "scripts": {
-        "auto-scripts": {
-          "setup": "Geekcow\\FonyCore\\Installer\\Setup::init"
-        },
-        "post-install-cmd": [
-            "@auto-scripts"
-        ],
-        "post-update-cmd": [
-            "@auto-scripts"
-        ],
-        "create-core-user": "Geekcow\\FonyCore\\Installer\\UserCreation::createCore",
-        "setup": "Geekcow\\FonyCore\\Installer\\Setup::init"
     }
 }
