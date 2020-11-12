@@ -6,123 +6,55 @@
  */
 namespace Geekcow\FonyCore\Utils;
 
-use Geekcow\FonyCore\CoreModel\ApiUser;
-use Geekcow\FonyCore\CoreModel\ApiToken;
-use Geekcow\FonyCore\CoreModel\ApiUserAsoc;
-use Geekcow\FonyCore\Utils\TokenUtils;
+use Geekcow\FonyCore\Utils\OauthUtils;
 
 class SessionUtils {
-  const BASIC = 'Basic ';
-  const BEARER = 'Bearer ';
+  // Hold the class instance.
+  private static $instance = null;
 
-  protected $api_token;
-  protected $api_user_asoc;
-  protected $user;
   public $username;
   public $session_scopes;
   public $err;
   public $response;
   private $config;
+  private $authenticator;
 
-  public function __construct(){
+  public function __construct($authenticator){
     $this->config = ConfigurationUtils::getInstance(MY_DOC_ROOT . "/src/config/config.ini");
-    $this->api_token = new ApiToken();
-    $this->api_user_asoc = new ApiUserAsoc();
-    $this->user = new ApiUser();
     $this->response = array();
 		$this->username = '';
+    $this->authenticator = $authenticator;
   }
 
-  /**
-   * Performs the login validation of the user and password
-   *
-   * @return BOOLEAN the user and password matches
-   *
-   */
-  public function validateLogin($params=array()){
-    $params['email'] = md5($params['email']);
-    $result = array();
-    $pass = sha1($params['password']);
-    if ($this->user->fetch_id(array('username' => $params['email']),null,true," password = '$pass' AND enabled = 1 ")){
-      if ($this->api_user_asoc->fetch_id(array('client_id'=>$this->client_id,'username'=>$this->user->columns['username']))){
-        $this->username = trim($this->user->columns['username']);
-        return true;
-      }else{
-        $this->err = 'User not associated';
-        return false;
-      }
-    }else{
-      if ($this->user->fetch_id(array('username' => $params['email']),null,true," enabled = 0 ")){
-        $this->err = 'User disabled';
-        return false;
-      }else{
-        $this->err = 'Invalid Credentials';
-        return false;
-      }
-    }
-  }
-
-  /**
-   * Validates if the token is active and valid then retrieves the scopes and username
-   *
-   * @return BOOLEAN the user and password matches
-   *
-   */
-  private function validateToken($token){
-    $result = $this->api_token->fetch("token = '$token' AND enabled = 1", false, array('updated_at'), false);
-    if (count($result) == 1){
-      $token = TokenUtils::decrypt(TokenUtils::base64UrlDecode($token), $this->config->getAppSecret());
-      $token = explode(':', $token);
-
-      if (count($token) == 4){
-        if (((time($result[0]->columns['updated_at'])*1000)+$result[0]->columns['expires']) > (time()*1000)){
-          $this->session_scopes = $token[2];
-          $this->username = trim($token[3]);
-
-          return true;
-        }else{
-          $result[0]->columns['enabled'] = 0;
-          $result[0]->columns['client_id'] = $result[0]->columns['client_id']['client_id'];
-          $result[0]->columns['username'] = $result[0]->columns['username']['username'];
-          $result[0]->update();
-          $this->err = 'Expired token';
-          return false;
-        }
-      }else{
-        $this->err = 'Malformed token';
-        return false;
-      }
-    }else{
-      $this->err = 'Invalid token';
-      return false;
-    }
+  public setAuthenticator($authenticator){
+    $this->authenticator = $authenticator;
   }
 
   public function validateBearerToken($token){
-    try{
-      $token = TokenUtils::sanitizeToken($token, self::BEARER);
-      if (TokenUtils::validateTokenSanity($token, self::BEARER)){
-        if ($this->validateToken($token)){
-          return true;
-        }else{
-          $this->response['type'] = 'error';
-          $this->response['code'] = 401;
-          $this->response['message'] = $this->err;
-          return false;
-        }
-      }else{
-        $this->response['type'] = 'error';
-        $this->response['code'] = 401;
-        $this->response['message'] = 'Malformed token';
-        return false;
-      }
-    }catch(Exception $e){
+    if ($this->authenticator->validateBearerToken($token)){
+      return true;
+    }else{
       $this->response['type'] = 'error';
       $this->response['code'] = 401;
       $this->response['message'] = $this->err;
       return false;
     }
 	}
+
+  // The object is created from within the class itself
+  // only if the class has no instance.
+  public static function getInstance($authenticator = null)
+  {
+    if (self::$instance == null)
+    {
+      if (is_null($authenticator)){
+        $authenticator = new OauthUtils();
+      }
+      self::$instance = new SessionUtils($authenticator);
+    }
+
+    return self::$instance;
+  }
 }
 
 ?>

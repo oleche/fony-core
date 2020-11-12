@@ -8,11 +8,7 @@ namespace Geekcow\FonyCore;
 
 use Geekcow\FonyCore\API;
 use Geekcow\FonyCore\Controller\GenericController;
-use Geekcow\FonyCore\Controller\AuthController;
-use Geekcow\FonyCore\Controller\UserController;
 use Geekcow\FonyCore\Helpers\AllowCore;
-use Geekcow\FonyCore\CoreModel\ApiScope;
-use Geekcow\FonyCore\CoreModel\ApiClient;
 use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 /**
@@ -55,24 +51,6 @@ class FonyApi extends API
     $this->allowed_core_roles = AllowCore::ADMINISTRATOR();
 
     switch($this->endpoint){
-      case 'user':
-        $this->core_action = new UserController($this->config_file);
-        $this->core_action->setRequest($request);
-        break;
-      case 'client':
-        $this->core_action = new GenericController($this->config_file);
-        $this->core_action->setRequest($request);
-        $this->core_action->setModel(new ApiClient());
-        break;
-      case 'scope':
-        $this->core_action = new GenericController($this->config_file);
-        $this->core_action->setRequest($request);
-        $this->core_action->setModel(new ApiScope());
-        break;
-      case 'auth':
-        $this->core_action = new AuthController($this->config_file);
-        $this->core_action->setRequest($request);
-        break;
       default:
         $this->core_action = new GenericController($this->config_file);
         $this->core_action->setRequest($request);
@@ -85,68 +63,4 @@ class FonyApi extends API
     $this->core_action->setAllowedRoles($role);
   }
 
-  /**
-   * Executes the authentication endpoint.
-   *
-   * @return JSON Authenticated response with token
-   *
-   */
-  protected function auth(){
-    switch ($this->method) {
-     case 'POST':
-       $this->core_action->doPost($_SERVER['HTTP_Authorization'], $_POST, $this->method);
-       $this->response_code = $this->core_action->response['code'];
-       return $this->core_action->response;
-       break;
-     case 'OPTIONS':
-       exit(0);
-       break;
-     default:
-       $this->response_code = 405;
-       return "Invalid method";
-       break;
-    }
-  }
-
-  /**
-   * Executes the user endpoint.
-   *
-   * @return JSON User response
-   *
-   */
-  protected function user(){
-    if ($this->exclude_core_actions){
-      $this->response_code = 405;
-      return "Invalid method";
-    }
-    return $this->_executesCall(true);
-  }
-
-  /**
-   * Executes the client endpoint.
-   *
-   * @return JSON Client response
-   *
-   */
-  protected function client(){
-    if ($this->exclude_core_actions){
-      $this->response_code = 405;
-      return "Invalid method";
-    }
-    return $this->_executesCall(true);
-  }
-
-  /**
-   * Executes the scope endpoint.
-   *
-   * @return JSON Scope response
-   *
-   */
-  protected function scope(){
-    if ($this->exclude_core_actions){
-      $this->response_code = 405;
-      return "Invalid method";
-    }
-    return $this->_executesCall(true);
-  }
 }

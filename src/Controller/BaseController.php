@@ -25,7 +25,7 @@ class BaseController extends CoreController
   public function __construct(){
     parent::__construct();
     $this->response = array();
-    $this->session = new SessionUtils();
+    $this->session = SessionUtils::getInstance();
     $this->action_verb = 'default';
     if (!$this->session->validateBearerToken($_SERVER['HTTP_Authorization'])){
       $this->validation_fail = true;
