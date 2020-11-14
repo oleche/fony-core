@@ -7,12 +7,12 @@
 namespace Geekcow\FonyCore\Utils;
 
 interface Authenticator{
-  public function validateBasicToken();
-  public function validateBearerToken();
+  public function validateBasicToken($token);
+  public function validateBearerToken($token);
 
   public function getScopes();
   public function getUsername();
-  public function getClient();
+  public function getClientId();
   public function getExpiration();
 }
 ?>

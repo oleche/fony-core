@@ -16,17 +16,15 @@ class SessionUtils {
   public $session_scopes;
   public $err;
   public $response;
-  private $config;
   private $authenticator;
 
   public function __construct($authenticator){
-    $this->config = ConfigurationUtils::getInstance(MY_DOC_ROOT . "/src/config/config.ini");
     $this->response = array();
 		$this->username = '';
     $this->authenticator = $authenticator;
   }
 
-  public setAuthenticator($authenticator){
+  public function setAuthenticator($authenticator){
     $this->authenticator = $authenticator;
   }
 
