@@ -27,10 +27,10 @@ class TokenUtils {
    * Returns an encrypted & utf8-encoded
    */
   public static function encrypt($pure_string, $encryption_key) {
-      $iv_size = openssl_cipher_iv_length('AES-128-ECB');
+      $iv_size = openssl_cipher_iv_length('AES-128-CBC');
       $iv = openssl_random_pseudo_bytes($iv_size);
 
-      $encrypted_string = openssl_encrypt(utf8_encode($pure_string), 'AES-128-ECB', $encryption_key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
+      $encrypted_string = openssl_encrypt(utf8_encode($pure_string), 'AES-128-CBC', $encryption_key, OPENSSL_RAW_DATA, $iv);
       return $encrypted_string;
   }
 
@@ -38,9 +38,10 @@ class TokenUtils {
    * Returns decrypted original string
    */
   public static function decrypt($encrypted_string, $encryption_key) {
-      $iv_size = openssl_cipher_iv_length('AES-128-ECB');
+      $iv_size = openssl_cipher_iv_length('AES-128-CBC');
       $iv = openssl_random_pseudo_bytes($iv_size);
-      $decrypted_string = openssl_encrypt ($encrypted_string , 'AES-128-ECB', $encryption_key, OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING, $iv);
+      
+      $decrypted_string = openssl_decrypt($encrypted_string, 'AES-128-CBC', $encryption_key, OPENSSL_RAW_DATA, $iv);
       return $decrypted_string;
   }
 }
