@@ -6,7 +6,7 @@
  */
 namespace Geekcow\FonyCore\Utils;
 
-use Geekcow\FonyCore\Utils\OauthUtils;
+use Geekcow\FonyCore\Utils\Oauth\OauthUtils;
 
 class SessionUtils {
   // Hold the class instance.

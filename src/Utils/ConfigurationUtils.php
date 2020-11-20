@@ -19,6 +19,11 @@ class ConfigurationUtils {
   private $file_url;
   private $site_url;
   private $filename;
+  //authentication
+  private $auth_method;
+  private $auth_url;
+  private $auth_refresh;
+  private $auth_validate;
   //other custom fields
   private $fieldsMap;
 
@@ -36,6 +41,16 @@ class ConfigurationUtils {
       $this->file_path = $config['fony.file_path'];
       $this->file_url = $config['fony.file_url'];
       $this->site_url = $config['fony.site_url'];
+      $this->auth_method = $config['fony.auth_method'];
+      if ($this->auth_method != 'self'){
+        $this->auth_url = $config['fony.auth_url'];
+        $this->auth_refresh = $config['fony.auth_refresh'];
+        $this->auth_validate = $config['fony.auth_validate'];
+      }else{
+        $this->auth_url = "";
+        $this->auth_refresh = "";
+        $this->auth_validate = "";
+      }
     }
 
     $this->filename = $configfile;
@@ -72,6 +87,22 @@ class ConfigurationUtils {
 
   public function getUserSecret(){
     return $this->user_secret;
+  }
+
+  public function getAuthenticationMethod(){
+    return $this->auth_method;
+  }
+
+  public function getAuthenticationUrl(){
+    return $this->auth_url;
+  }
+
+  public function getAuthenticationValidateTokenEndpoint(){
+    return $this->auth_validate;
+  }
+
+  public function getAuthenticationRefreshTokenEndpoint(){
+    return $this->auth_refesh;
   }
 
   public function fromArray($parameters = array()){
@@ -116,6 +147,26 @@ class ConfigurationUtils {
       $this->fieldsMap['fony']['fony.site_url'] = $this->site_url ;
     }else{
       $this->site_url = $this->fieldsMap['fony']['fony.site_url'] ;
+    }
+    if (!isset($this->fieldsMap['fony']['fony.auth_method'])){
+      $this->fieldsMap['fony']['fony.auth_method'] = $this->auth_method ;
+    }else{
+      $this->auth_method = $this->fieldsMap['fony']['fony.auth_method'] ;
+    }
+    if (!isset($this->fieldsMap['fony']['fony.auth_url'])){
+      $this->fieldsMap['fony']['fony.auth_url'] = $this->auth_url ;
+    }else{
+      $this->auth_url = $this->fieldsMap['fony']['fony.auth_url'] ;
+    }
+    if (!isset($this->fieldsMap['fony']['fony.auth_validate'])){
+      $this->fieldsMap['fony']['fony.auth_validate'] = $this->auth_validate ;
+    }else{
+      $this->auth_validate = $this->fieldsMap['fony']['fony.auth_validate'] ;
+    }
+    if (!isset($this->fieldsMap['fony']['fony.auth_refesh'])){
+      $this->fieldsMap['fony']['fony.auth_refesh'] = $this->auth_refesh ;
+    }else{
+      $this->auth_refesh = $this->fieldsMap['fony']['fony.auth_refesh'] ;
     }
 
     if (!file_exists(dirname($path))) {
