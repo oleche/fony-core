@@ -6,7 +6,7 @@
  */
 namespace Geekcow\FonyCore\Utils;
 
-use Geekcow\FonyCore\Utils\Oauth\OauthUtils;
+use Geekcow\FonyCore\Utils\Oauth\Oauth;
 
 class SessionUtils {
   // Hold the class instance.
@@ -46,7 +46,7 @@ class SessionUtils {
     if (self::$instance == null)
     {
       if (is_null($authenticator)){
-        $authenticator = new OauthUtils();
+        $authenticator = new Oauth();
       }
       self::$instance = new SessionUtils($authenticator);
     }

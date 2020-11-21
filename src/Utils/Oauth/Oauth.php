@@ -10,7 +10,7 @@ use Geekcow\FonyCore\Utils\Oauth\OauthClient;
 use Geekcow\FonyCore\Utils\Authenticator;
 use Geekcow\FonyCore\Controller;
 
-class OauthUtils implements Authenticator{
+class Oauth implements Authenticator{
   private $err;
   private $client;
   private $config;
