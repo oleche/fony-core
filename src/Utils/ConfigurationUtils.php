@@ -102,7 +102,7 @@ class ConfigurationUtils {
   }
 
   public function getAuthenticationRefreshTokenEndpoint(){
-    return $this->auth_refesh;
+    return $this->auth_refresh;
   }
 
   public function fromArray($parameters = array()){
@@ -163,10 +163,10 @@ class ConfigurationUtils {
     }else{
       $this->auth_validate = $this->fieldsMap['fony']['fony.auth_validate'] ;
     }
-    if (!isset($this->fieldsMap['fony']['fony.auth_refesh'])){
-      $this->fieldsMap['fony']['fony.auth_refesh'] = $this->auth_refesh ;
+    if (!isset($this->fieldsMap['fony']['fony.auth_refresh'])){
+      $this->fieldsMap['fony']['fony.auth_refresh'] = $this->auth_refresh ;
     }else{
-      $this->auth_refesh = $this->fieldsMap['fony']['fony.auth_refesh'] ;
+      $this->auth_refresh = $this->fieldsMap['fony']['fony.auth_refresh'] ;
     }
 
     if (!file_exists(dirname($path))) {

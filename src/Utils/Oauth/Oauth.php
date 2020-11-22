@@ -21,7 +21,7 @@ class Oauth implements Authenticator{
   private $scopes;
 
   public function __construct(){
-    $this->config = ConfigurationUtils::getInstance()
+    $this->config = ConfigurationUtils::getInstance();
     $this->client = new OauthClient();
   }
 
