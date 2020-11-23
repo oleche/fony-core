@@ -8,6 +8,7 @@ namespace Geekcow\FonyCore\Utils\Oauth;
 
 use Geekcow\FonyCore\Utils\Oauth\OauthClient;
 use Geekcow\FonyCore\Utils\Authenticator;
+use Geekcow\FonyCore\Utils\ConfigurationUtils;
 use Geekcow\FonyCore\Controller;
 
 class Oauth implements Authenticator{
@@ -31,12 +32,23 @@ class Oauth implements Authenticator{
   }
 
   public function validateBearerToken($token = '') {
-    $params = ["token" => $token];
-    $response = $this->client->doPOST(
+    $params = array();
+    $params["token"] = $token;
+    if ($this->client->doPOST(
       $this->config->getAuthenticationValidateTokenEndpoint(),
       $params
-    );
-    print_r($response);
+    )) {
+      $response = json_decode($this->client->getResult(),true);
+      if (!isset($response['active']) || !$response['active']){
+        $this->err = $response['message'];
+        return false;
+      }
+      $this->username = $response['username'];
+      $this->scopes = $response['scope'];
+      $this->client_id = $response['client_id'];
+      $this->expiration = $response['exp'];
+      return true;
+    }
     $this->err = "Not completed";
     return false;
   }

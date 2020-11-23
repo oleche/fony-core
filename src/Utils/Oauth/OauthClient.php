@@ -6,7 +6,8 @@
  */
 namespace Geekcow\FonyCore\Utils\Oauth;
 
-use Geekcow\FonyCore\Controller;
+use Geekcow\FonyCore\Controller\ApiMethods;
+use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 class OauthClient implements ApiMethods {
 
@@ -25,10 +26,15 @@ class OauthClient implements ApiMethods {
     $this->client_secret = $this->config->getUserSecret();
   }
 
+  public function getResult(){
+    return $this->result;
+  }
+
   public function doPOST($endpoint = '', $params = []){
     try{
       $ch = curl_init();
       $method = "POST";
+      $endpoint = str_replace('/','',$endpoint);
       $url = "$this->host/$endpoint";
 
       curl_setopt($ch, CURLOPT_USERPWD, $this->client_id . ":" . $this->client_secret);
@@ -36,7 +42,7 @@ class OauthClient implements ApiMethods {
       curl_setopt($ch, CURLOPT_PORT, $this->port);
       curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
       curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
-      curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($params,JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
+      curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 
       $result = curl_exec($ch);
       curl_close($ch);
