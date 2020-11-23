@@ -68,6 +68,10 @@ class Oauth implements Authenticator{
   public function getExpiration(){
     return $this->expiration;
   }
+
+  public function getErr(){
+    return $this->err;
+  }
 }
 
 ?>

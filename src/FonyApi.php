@@ -63,4 +63,8 @@ class FonyApi extends API
     $this->core_action->setAllowedRoles($role);
   }
 
+  public function setAllowedRoles($role){
+    $this->action->setAllowedRoles($role);
+  }
+
 }

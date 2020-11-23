@@ -30,11 +30,13 @@ class SessionUtils {
 
   public function validateBearerToken($token){
     if ($this->authenticator->validateBearerToken($token)){
+      $this->username = $this->authenticator->getUsername();
+      $this->session_scopes = $this->authenticator->getScopes();
       return true;
     }else{
       $this->response['type'] = 'error';
       $this->response['code'] = 401;
-      $this->response['message'] = $this->err;
+      $this->response['message'] = $this->authenticator->getErr();
       return false;
     }
 	}
