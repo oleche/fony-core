@@ -27,22 +27,32 @@ class TokenUtils {
    * Returns an encrypted & utf8-encoded
    */
   public static function encrypt($pure_string, $encryption_key) {
-      $iv_size = openssl_cipher_iv_length('AES-128-CBC');
-      $iv = openssl_random_pseudo_bytes($iv_size);
+    $method = 'AES-256-CBC';
 
-      $encrypted_string = openssl_encrypt(utf8_encode($pure_string), 'AES-128-CBC', $encryption_key, OPENSSL_RAW_DATA, $iv);
-      return $encrypted_string;
+    // hash
+    $key = hash('sha256', $encryption_key);
+
+    // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+    $iv = substr(hash('sha256', $encryption_key), 0, 16);
+
+    $encrypted_string = openssl_encrypt(utf8_encode($pure_string), $method, $key, 0, $iv);
+    return $encrypted_string;
   }
 
   /**
    * Returns decrypted original string
    */
   public static function decrypt($encrypted_string, $encryption_key) {
-      $iv_size = openssl_cipher_iv_length('AES-128-CBC');
-      $iv = openssl_random_pseudo_bytes($iv_size);
-      
-      $decrypted_string = openssl_decrypt($encrypted_string, 'AES-128-CBC', $encryption_key, OPENSSL_RAW_DATA, $iv);
-      return $decrypted_string;
+    $method = 'AES-256-CBC';
+
+    // hash
+    $key = hash('sha256', $encryption_key);
+
+    // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
+    $iv = substr(hash('sha256', $encryption_key), 0, 16);
+
+    $decrypted_string = openssl_decrypt($encrypted_string, $method, $key, 0, $iv);
+    return $decrypted_string;
   }
 }
 
