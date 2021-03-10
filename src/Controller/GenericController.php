@@ -44,8 +44,7 @@ class GenericController extends BaseController implements ApiMethods
     public function doPOST($args = array(), $verb = null)
     {
         if (!$this->validation_fail) {
-            if (!AllowCore::isAllowed($this->session->session_scopes, $this->allowed_roles)) {
-                $this->response = AllowCore::denied($this->session->session_scopes);
+            if (!$this->validateScope($this->session->session_scopes)){
                 return false;
             }
 
@@ -67,8 +66,7 @@ class GenericController extends BaseController implements ApiMethods
     public function doGET($args = array(), $verb = null)
     {
         if (!$this->validation_fail) {
-            if (!AllowCore::isAllowed($this->session->session_scopes, $this->allowed_roles)) {
-                $this->response = AllowCore::denied($this->session->session_scopes);
+            if (!$this->validateScope($this->session->session_scopes)){
                 return false;
             }
 
@@ -96,10 +94,10 @@ class GenericController extends BaseController implements ApiMethods
     public function doPUT($args = array(), $verb = null, $file = null)
     {
         if (!$this->validation_fail) {
-            if (!AllowCore::isAllowed($this->session->session_scopes, $this->allowed_roles)) {
-                $this->response = AllowCore::denied($this->session->session_scopes);
+            if (!$this->validateScope($this->session->session_scopes)){
                 return false;
             }
+
             if ($this->validateFields($_POST, $this->form_endpoint, 'PUT')) {
                 $put = new GenericPut($this->model, $this->session, $verb);
                 $put->setValidationExclusion($this->allowed_roles);
@@ -119,8 +117,7 @@ class GenericController extends BaseController implements ApiMethods
     public function doDELETE($args = array(), $verb = null)
     {
         if (!$this->validation_fail) {
-            if (!AllowCore::isAllowed($this->session->session_scopes, $this->allowed_roles)) {
-                $this->response = AllowCore::denied($this->session->session_scopes);
+            if (!$this->validateScope($this->session->session_scopes)){
                 return false;
             }
 

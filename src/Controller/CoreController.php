@@ -9,6 +9,7 @@
 namespace Geekcow\FonyCore\Controller;
 
 use Geekcow\FonyCore\CoreModel\ApiForm;
+use Geekcow\FonyCore\Helpers\AllowCore;
 
 abstract class CoreController
 {
@@ -45,6 +46,15 @@ abstract class CoreController
     public function setFormEndpoint($endpoint)
     {
         $this->form_endpoint = $endpoint;
+    }
+
+    protected function validateScope($scope)
+    {
+        if (!AllowCore::isAllowed($scope, $this->allowed_roles)) {
+            $this->response = AllowCore::denied($scope);
+            return false;
+        }
+        return true;
     }
 
     /**
