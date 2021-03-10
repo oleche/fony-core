@@ -8,6 +8,8 @@
 
 namespace Geekcow\FonyCore\Controller;
 
+use Geekcow\FonyCore\Helpers\AllowCore;
+
 class CoreActions
 {
     public $response;
@@ -39,6 +41,15 @@ class CoreActions
     public function setFile($file)
     {
         $this->file = $file;
+    }
+
+    protected function validateScope($scope)
+    {
+        if (!AllowCore::isAllowed($scope, $this->allowed_roles)) {
+            $this->response = AllowCore::denied($scope);
+            return false;
+        }
+        return true;
     }
 
     /**
