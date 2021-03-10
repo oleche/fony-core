@@ -1,12 +1,13 @@
 <?php
+
 /* API core routing base
  * Developed by OSCAR LECHE
  * V.1.0
  * DESCRIPTION: This is the class where the initial and basic endpoints routing are taking place
  */
+
 namespace Geekcow\FonyCore;
 
-use Geekcow\FonyCore\API;
 use Geekcow\FonyCore\Controller\GenericController;
 use Geekcow\FonyCore\Helpers\AllowCore;
 use Geekcow\FonyCore\Utils\ConfigurationUtils;
@@ -39,32 +40,34 @@ use Geekcow\FonyCore\Utils\ConfigurationUtils;
  */
 class FonyApi extends API
 {
-  protected $config_file;
-  protected $exclude_core_actions;
-  protected $allowed_core_roles;
+    protected $config_file;
+    protected $exclude_core_actions;
+    protected $allowed_core_roles;
 
-  public function __construct($request, $origin, $config_file = MY_DOC_ROOT . "/src/config/config.ini") {
-    parent::__construct($request, $origin);
+    public function __construct($request, $origin, $config_file = MY_DOC_ROOT . "/src/config/config.ini")
+    {
+        parent::__construct($request, $origin);
 
-    $this->config_file = ConfigurationUtils::getInstance($config_file);
-    $this->exclude_core_actions = false;
-    $this->allowed_core_roles = AllowCore::ADMINISTRATOR();
+        $this->config_file = ConfigurationUtils::getInstance($config_file);
+        $this->exclude_core_actions = false;
+        $this->allowed_core_roles = AllowCore::ADMINISTRATOR();
 
-    switch($this->endpoint){
-      default:
-        $this->core_action = new GenericController($this->config_file);
-        $this->core_action->setRequest($request);
-        break;
+        switch ($this->endpoint) {
+            default:
+                $this->core_action = new GenericController($this->config_file);
+                $this->core_action->setRequest($request);
+                break;
+        }
     }
-  }
 
-  public function setAllowedCoreRoles($role){
-    $this->allowed_core_roles = $role;
-    $this->core_action->setAllowedRoles($role);
-  }
+    public function setAllowedCoreRoles($role)
+    {
+        $this->allowed_core_roles = $role;
+        $this->core_action->setAllowedRoles($role);
+    }
 
-  public function setAllowedRoles($role){
-    $this->action->setAllowedRoles($role);
-  }
-
+    public function setAllowedRoles($role)
+    {
+        $this->action->setAllowedRoles($role);
+    }
 }
