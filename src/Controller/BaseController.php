@@ -69,6 +69,12 @@ class BaseController extends CoreController
         return false;
     }
 
+    protected function broadcastMessage($type, $verification)
+    {
+        //custom email sending
+        return true;
+    }
+
     protected function setExecutableClass($action_class)
     {
         $this->action_class = $action_class;
