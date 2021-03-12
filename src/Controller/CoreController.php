@@ -73,42 +73,49 @@ abstract class CoreController
                 $available[] = $k;
             }
         }
-        $q_list = $this->api_form->fetch(" endpoint LIKE '$endpoint' AND method LIKE '$method' ");
+        $q_list = (array)$this->api_form->fetch(" endpoint LIKE '$endpoint' AND method LIKE '$method' ");
         if (count($q_list) > 0) {
             $i = 0;
             foreach ($q_list as $q_item) {
                 $i++;
-                if (in_array($q_item->columns['field'], $available)) {
-                    //regex validation
-                    if (!preg_match($q_item->columns['id_type']['regex'], $fields[$q_item->columns['field']])) {
-                        $rvalue = false;
-                        $message = array();
-                        $message['field'] = $q_item->columns['field'];
-                        $message['message'] = 'Do not match validation type: ' . $q_item->columns['id_type']['name'];
-                        $message['format'] = $q_item->columns['id_type']['regex'];
-                        $this->response['message'][] = $message;
-                        $this->response['code'] = 422;
-                    }
-                    //empty validation
-                    if ($q_item->columns['blank']) {
-                        if (trim($fields[$q_item->columns['field']]) == '') {
+                if (isset($q_item->columns)) {
+                    if (in_array($q_item->columns['field'], $available)) {
+                        //regex validation
+                        if (!preg_match($q_item->columns['id_type']['regex'], $fields[$q_item->columns['field']])) {
                             $rvalue = false;
                             $message = array();
                             $message['field'] = $q_item->columns['field'];
-                            $message['message'] = 'Is empty';
+                            $message['message'] = 'Do not match validation type: ' . $q_item->columns['id_type']['name'];
+                            $message['format'] = $q_item->columns['id_type']['regex'];
+                            $this->response['message'][] = $message;
+                            $this->response['code'] = 422;
+                        }
+                        //empty validation
+                        if ($q_item->columns['blank']) {
+                            if (trim($fields[$q_item->columns['field']]) == '') {
+                                $rvalue = false;
+                                $message = array();
+                                $message['field'] = $q_item->columns['field'];
+                                $message['message'] = 'Is empty';
+                                $this->response['message'][] = $message;
+                                $this->response['code'] = 422;
+                            }
+                        }
+                    } else {
+                        if ($q_item->columns['required']) {
+                            $rvalue = false;
+                            $message = array();
+                            $message['field'] = $q_item->columns['field'];
+                            $message['message'] = 'Is required';
                             $this->response['message'][] = $message;
                             $this->response['code'] = 422;
                         }
                     }
                 } else {
-                    if ($q_item->columns['required']) {
-                        $rvalue = false;
-                        $message = array();
-                        $message['field'] = $q_item->columns['field'];
-                        $message['message'] = 'Is required';
-                        $this->response['message'][] = $message;
-                        $this->response['code'] = 422;
-                    }
+                    $message = array();
+                    $message['message'] = 'Fields definition error';
+                    $this->response['message'][] = $message;
+                    $this->response['code'] = 500;
                 }
             }
         } else {
