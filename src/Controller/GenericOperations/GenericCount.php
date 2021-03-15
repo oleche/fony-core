@@ -53,7 +53,7 @@ class GenericCount extends CoreOperation
             if (trim($query) != "") {
                 $query .= " AND ";
             }
-            $query .= " username = '$this->session->username'";
+            $query .= " $this->usernameKey = '" . $this->session->username . "'";
         }
 
         $q_list = array();

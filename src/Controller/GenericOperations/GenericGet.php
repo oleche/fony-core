@@ -58,7 +58,7 @@ class GenericGet extends CoreOperation
         }
 
         if ($this->checkUser) {
-            $query = "username = '$this->session->username' " . ((trim($query) != "") ? " AND " . $query : $query);
+            $query = "$this->usernameKey = '" . $this->session->username . "' " . ((trim($query) != "") ? " AND " . $query : $query);
         }
 
         if (is_null($this->id) || $this->id == "") {

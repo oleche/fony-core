@@ -9,10 +9,14 @@
 namespace Geekcow\FonyCore\Controller;
 
 use Geekcow\FonyCore\Helpers\AllowCore;
+use Geekcow\FonyCore\Utils\SessionUtils;
 
 class CoreOperation
 {
     protected $model;
+    /**
+     * @var SessionUtils
+     */
     protected $session;
     protected $usernameKey;
     protected $validationExclusion;

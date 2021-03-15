@@ -10,11 +10,15 @@ namespace Geekcow\FonyCore\Controller;
 
 use Geekcow\FonyCore\CoreModel\ApiForm;
 use Geekcow\FonyCore\Helpers\AllowCore;
+use Geekcow\FonyCore\Utils\SessionUtils;
 
 class CoreActions
 {
     public $response;
     public $pagination_link;
+    /**
+     * @var SessionUtils
+     */
     protected $session;
     protected $allowed_roles;
     protected $file;
