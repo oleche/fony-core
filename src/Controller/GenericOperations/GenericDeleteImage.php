@@ -111,7 +111,8 @@ class GenericDeleteImage
 
     private function validateUser($username)
     {
-        if (!AllowCore::is_allowed($this->session->session_scopes, AllowCore::ADMINISTRATOR())) {
+        //TODO:: fix allowcore
+        if (!AllowCore::is_allowed($this->session->session_scopes, AllowCore::SYSTEM())) {
             if ($this->session->username != $username) {
                 $this->response['type'] = 'error';
                 $this->response['title'] = 'User';

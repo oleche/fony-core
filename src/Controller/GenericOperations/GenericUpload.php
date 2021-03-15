@@ -27,7 +27,7 @@ class GenericUpload
         $this->response = array();
         $this->session = $session;
         $this->id = $id;
-        $this->validScope = AllowCore::ADMINISTRATOR();
+        $this->validScope = AllowCore::SYSTEM();
         $this->checkUser = false;
         $this->path = null;
         $this->assetUrl = null;
@@ -138,7 +138,8 @@ class GenericUpload
 
     private function validateUser($username)
     {
-        if (!AllowCore::is_allowed($this->session->session_scopes, AllowCore::ADMINISTRATOR())) {
+        //TODO:: fix allowcore
+        if (!AllowCore::is_allowed($this->session->session_scopes, AllowCore::SYSTEM())) {
             if ($this->session->username != $username) {
                 $this->response['type'] = 'error';
                 $this->response['title'] = 'User';

@@ -87,4 +87,9 @@ class CoreOperation
     {
         $this->checkUser = true;
     }
+
+    protected function getClassName($class){
+        $path = explode('\\', get_class($class));
+        return array_pop($path);
+    }
 }

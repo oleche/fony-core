@@ -50,7 +50,7 @@ class FonyApi extends API
 
         $this->config_file = ConfigurationUtils::getInstance($config_file);
         $this->exclude_core_actions = false;
-        $this->allowed_core_roles = AllowCore::ADMINISTRATOR();
+        $this->allowed_core_roles = AllowCore::SYSTEM();
 
         switch ($this->endpoint) {
             default:

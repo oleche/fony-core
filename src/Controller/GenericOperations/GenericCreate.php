@@ -50,7 +50,7 @@ class GenericCreate extends CoreOperation
         if (is_numeric($id)) {
             $this->model->fetch_id(array($pk => $id));
             $this->model->columns[$pk] = $id;
-            $this->response[get_class($this->model)] = $this->model->columns;
+            $this->response[$this->getClassName($this->model)] = $this->model->columns;
             $this->response['code'] = 200;
         } else {
             $this->response['type'] = 'error';
@@ -105,7 +105,7 @@ class GenericCreate extends CoreOperation
         if ($this->model->isUnique($uniquenessKeys, $mergedParameteres) == true) {
             return true;
         } else {
-            $this->response[get_class($this->model)] = array();
+            $this->response[$this->getClassName($this->model)] = array();
             $this->response['type'] = 'error';
             $this->response['title'] = 'Create model';
             $this->response['message'] = 'The item is not unique';

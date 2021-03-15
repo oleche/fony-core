@@ -31,7 +31,7 @@ class GenericController extends BaseController implements ApiMethods
     public function __construct()
     {
         parent::__construct();
-        $this->allowed_roles = AllowCore::ADMINISTRATOR();
+        $this->allowed_roles = AllowCore::SYSTEM();
     }
 
     //USUALLY TO CREATE

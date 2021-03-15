@@ -8,6 +8,7 @@
 
 namespace Geekcow\FonyCore\Controller;
 
+use Geekcow\FonyCore\CoreModel\ApiForm;
 use Geekcow\FonyCore\Helpers\AllowCore;
 
 class CoreActions
@@ -17,6 +18,7 @@ class CoreActions
     protected $session;
     protected $allowed_roles;
     protected $file;
+    protected $filter;
 
     //internalDB
     private $api_form;
@@ -26,6 +28,7 @@ class CoreActions
         $this->api_form = new ApiForm();
         $this->response = array();
         $this->pagination_link = null;
+        $this->filter = array();
     }
 
     public function setSession($session)
@@ -41,6 +44,22 @@ class CoreActions
     public function setFile($file)
     {
         $this->file = $file;
+    }
+
+    /**
+     * @return array
+     */
+    public function getFilter(): array
+    {
+        return $this->filter;
+    }
+
+    /**
+     * @param array $filter
+     */
+    public function setFilter(array $filter): void
+    {
+        $this->filter = $filter;
     }
 
     protected function validateScope($scope)

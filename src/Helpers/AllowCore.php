@@ -10,16 +10,7 @@ namespace Geekcow\FonyCore\Helpers;
 
 class AllowCore
 {
-    private static $ADMINISTRATOR = array('administrator');
-    private static $SYSTEM = array('system', 'administrator');
-
-    /**
-     * @return string[]
-     */
-    public static function ADMINISTRATOR()
-    {
-        return self::$ADMINISTRATOR;
-    }
+    private static $SYSTEM = array('system');
 
     /**
      * @return string[]
@@ -37,10 +28,10 @@ class AllowCore
     public static function isAllowed($scopes, $allow)
     {
         $set = explode(',', $scopes);
-        $r_values = true;
+        $r_values = false;
         foreach ($set as $value) {
             $value = trim($value);
-            $r_values = ($r_values && in_array($value, $allow));
+            $r_values = ($r_values || in_array($value, $allow));
         }
         return $r_values;
     }
