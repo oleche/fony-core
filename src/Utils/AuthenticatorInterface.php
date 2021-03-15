@@ -16,6 +16,8 @@ interface AuthenticatorInterface
 
     public function getScopes();
 
+    public function getScopeLevel();
+
     public function getUsername();
 
     public function getClientId();

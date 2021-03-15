@@ -30,12 +30,13 @@ class SessionUtils
      * @var
      */
     public $session_scopes;
+    public $session_level;
     /**
      * @var array
      */
     public $response;
     /**
-     * @var
+     * @var AuthenticatorInterface
      */
     private $authenticator;
 
@@ -67,6 +68,7 @@ class SessionUtils
         if ($this->authenticator->validateBearerToken($token)) {
             $this->username = $this->authenticator->getUsername();
             $this->session_scopes = $this->authenticator->getScopes();
+            $this->session_level = $this->authenticator->getScopeLevel();
             return true;
         } else {
             $this->response['type'] = 'error';

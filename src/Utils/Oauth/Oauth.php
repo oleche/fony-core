@@ -47,6 +47,8 @@ class Oauth implements AuthenticatorInterface
      */
     private $scopes;
 
+    private $scope_level;
+
     /**
      * Oauth constructor.
      */
@@ -87,6 +89,7 @@ class Oauth implements AuthenticatorInterface
             }
             $this->username = $response['username'];
             $this->scopes = $response['scope'];
+            $this->scope_level = $response['scope_level'];
             $this->client_id = $response['client_id'];
             $this->expiration = $response['exp'];
             return true;
@@ -133,5 +136,10 @@ class Oauth implements AuthenticatorInterface
     public function getErr()
     {
         return $this->err;
+    }
+
+    public function getScopeLevel()
+    {
+        return $this->scope_level;
     }
 }
