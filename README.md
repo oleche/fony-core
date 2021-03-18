@@ -32,8 +32,9 @@ Your `Router` class should be an implementation of the `FonyApi` class provided 
 
 ## How does the `Router` works
 The way the Router class works comes as following
-- The constructor sweeps over the endpoint used. So an action class (aka controller) can be prestaged.
-- The endpoint will execute a method called the same name. ie. If the endpoint is `/api/user/:id` the endpoint we are going to execute is `user`, so a `user()` function needs to be defined.
+- The constructor sweeps over the endpoint requested. So an action class (aka controller) can be prestaged.
+- The endpoint will execute a method called the with same name of the request. ie. If the endpoint is `/api/user/:id` the endpoint we are going to execute is `user`, so a `user()` function needs to be defined.
+- Additionally to it, if the endpoint is written with dashes, then the endpoint should be written with camel case. 
 
 This is an example of a `Router` class:
 
@@ -70,7 +71,13 @@ class Router extends FonyApi
                 break;
         }
     }
-
+    
+    /**
+     * Shows a welcome message
+     *
+     * @return string
+     *
+     */
     //WELCOME MESSAGE
     protected function welcome()
     {
@@ -82,16 +89,16 @@ class Router extends FonyApi
     }
 
     /**
-     * Executes the authentication endpoint.
+     * Executes only a POST operation.
      *
      * @return JSON Authenticated response with token
      *
      */
-    protected function authenticate()
+    protected function genericControllerEndpoint()
     {
         switch ($this->method) {
             case 'POST':
-                $this->action->doPost($_SERVER['HTTP_Authorization'], $_POST, $this->verb);
+                $this->action->doPost($this->args, $this->verb);
                 $this->response_code = $this->action->response['code'];
                 return $this->action->response;
                 break;
@@ -106,62 +113,15 @@ class Router extends FonyApi
     }
 
     /**
-     * Executes the token validation endpoint.
+     * Executes an endpoint using the default behavior.
      *
-     * @return JSON Authenticated response with token
-     *
-     */
-    protected function validate()
-    {
-        switch ($this->method) {
-            case 'POST':
-                $this->action->doPost($_SERVER['HTTP_Authorization'], $_POST);
-                $this->response_code = $this->action->response['code'];
-                return $this->action->response;
-                break;
-            case 'OPTIONS':
-                exit(0);
-                break;
-            default:
-                $this->response_code = 405;
-                return "Invalid method";
-                break;
-        }
-    }
-
-    /**
-     * Executes the user endpoint.
-     *
-     * @return JSON User response
+     * @return JSON response
      *
      */
-    protected function user()
+    protected function genericActionableControllerEndpoint()
     {
         return $this->executesCall();
     }
-
-    /**
-     * Executes the client endpoint.
-     *
-     * @return JSON Client response
-     *
-     */
-    protected function client()
-    {
-        return $this->executesCall();
-    }
-
-    /**
-     * Executes the scope endpoint.
-     *
-     * @return JSON Scope response
-     *
-     */
-    protected function scope()
-    {
-        return $this->executesCall();
-    }
-
 }
 
 ```  
@@ -170,7 +130,10 @@ class Router extends FonyApi
 By default, Fony uses Oauth2 authentication, so it relies on the configuration file required by installing Fony:
 - List of parameters TBD
  
-Alternatively you can define your own authentication mechanism (like the [fony-auth]() project), where you can create an Authentication class as an implementation of the `AuthenticatorInterface` and initialize it in the Router constructor:
+Alternatively you can define your own authentication mechanism (like the [fony-auth](https://github.com/oleche/fony-auth) project), where you can create an Authentication class as an implementation of the `AuthenticatorInterface` and initialize it in the Router constructor:
 ```PHP
     $sessionInstance = SessionUtils::getInstance(new CustomAuthenticatorClass());
 ```
+
+## Example
+Soon an example repository will be available

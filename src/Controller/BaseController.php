@@ -9,6 +9,7 @@
 
 namespace Geekcow\FonyCore\Controller;
 
+use Geekcow\FonyCore\Utils\HashTypes;
 use Geekcow\FonyCore\Utils\SessionUtils;
 
 class BaseController extends CoreController
@@ -42,6 +43,7 @@ class BaseController extends CoreController
         $this->action_class->setSession($this->session);
         $this->action_class->setRoles($this->allowed_roles);
         $this->action_class->setRequest($this->request);
+        $this->action_class->setFormEndpoint($this->form_endpoint);
         if ((int)method_exists($this->action_class, $this->action_verb) > 0) {
             if (!is_null($this->action_id)) {
                 $this->action_class->{$this->action_verb}($this->action_id);
@@ -138,5 +140,45 @@ class BaseController extends CoreController
             }
         }
         return $count;
+    }
+
+    /**
+     * @param array $args
+     * @param $verb
+     * @param CoreActions $action
+     * @param null $file
+     */
+    protected function executeActionFlow(array $args, $verb, CoreActions $action, $file = null): void
+    {
+        if (!is_null($file)) {
+            $action->setFile($file);
+        }
+        $action->setSession($this->session);
+        $action->setRoles($this->allowed_roles);
+        $this->setExecutableClass($action);
+        $strict = false;
+        if (is_array($args) && empty($args)) {
+            $this->setActionId($verb);
+        } else {
+            if ((count($args) > 0) && (is_numeric($args[0]))) {
+                $this->setActionId($args[0]);
+                $this->setActionVerb($verb);
+                $strict = true;
+            } else {
+                if (preg_match(HashTypes::MD5, $verb)) {
+                    $this->setActionId($verb);
+                    if ((count($args) > 0)){
+                        $this->setActionVerb($args[0]);
+                        $strict = true;
+                    }else {
+                        $strict = false;
+                    }
+                } else {
+                    $this->setActionVerb($verb);
+                    $strict = true;
+                }
+            }
+        }
+        $this->execute($strict);
     }
 }

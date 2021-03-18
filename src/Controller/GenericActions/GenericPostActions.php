@@ -20,7 +20,7 @@ class GenericPostActions extends CoreActions implements CoreActionsInterface
         }
 
         if ($this->validateFields($this->request, $this->form_endpoint, 'POST')) {
-            $create = new GenericCreate($this->model, $this->session);
+            $create = new GenericCreate($this->model, $this->session, $this->request);
             $create->create();
             $this->response = $create->getResponse();
         }

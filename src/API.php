@@ -87,6 +87,7 @@ abstract class API
 
         $this->args = explode('/', rtrim($URI, '/'));
         $this->endpoint = array_shift($this->args);
+        $this->endpoint = $this->dashesToCamelCase($this->endpoint);
         if (array_key_exists(0, $this->args) && !is_numeric($this->args[0])) {
             $this->verb = array_shift($this->args);
         }
@@ -149,6 +150,17 @@ abstract class API
                 $this->response('Invalid Method', 405);
                 break;
         }
+    }
+
+    function dashesToCamelCase($string, $capitalizeFirstCharacter = false)
+    {
+        $str = str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
+
+        if (!$capitalizeFirstCharacter) {
+            $str[0] = strtolower($str[0]);
+        }
+
+        return $str;
     }
 
     private function cleanInputs($data)

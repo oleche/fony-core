@@ -8,10 +8,15 @@
 
 namespace Geekcow\FonyCore\Controller\GenericOperations;
 
+use Geekcow\Dbcore\Entity;
 use Geekcow\FonyCore\Controller\CoreOperation;
 
 class GenericCreate extends CoreOperation
 {
+
+    /**
+     * @var Entity
+     */
     private $model;
     private $uniqueness_keys;
     private $custom_parameters;

@@ -25,6 +25,7 @@ class CoreActions
     protected $file;
     protected $filter;
     protected $request;
+    protected $form_endpoint;
 
     /**
      * @var Entity
@@ -41,6 +42,7 @@ class CoreActions
         $this->pagination_link = null;
         $this->filter = array();
         $this->request = array();
+        $this->form_endpoint = "";
     }
 
     public function setSession($session)
@@ -64,6 +66,14 @@ class CoreActions
     public function setModel(Entity $model): void
     {
         $this->model = $model;
+    }
+
+    /**
+     * @param string $form_endpoint
+     */
+    public function setFormEndpoint(string $form_endpoint): void
+    {
+        $this->form_endpoint = $form_endpoint;
     }
 
     /**

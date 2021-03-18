@@ -157,42 +157,4 @@ class GenericActionController extends BaseController implements ApiMethods
         $this->put_action->setModel($model);
         $this->delete_action->setModel($model);
     }
-
-    /**
-     * @param array $args
-     * @param $verb
-     */
-    private function executeActionFlow(array $args, $verb, $action, $file = null): void
-    {
-        if (!is_null($file)) {
-            $action->setFile($file);
-        }
-        $action->setSession($this->session);
-        $action->setRoles($this->allowed_roles);
-        $this->setExecutableClass($action);
-        $strict = false;
-        if (is_array($args) && empty($args)) {
-            $this->setActionId($verb);
-        } else {
-            if ((count($args) > 0) && (is_numeric($args[0]))) {
-                $this->setActionId($args[0]);
-                $this->setActionVerb($verb);
-                $strict = true;
-            } else {
-                if (preg_match(HashTypes::MD5, $verb)) {
-                    $this->setActionId($verb);
-                    if ((count($args) > 0)){
-                        $this->setActionVerb($args[0]);
-                        $strict = true;
-                    }else {
-                        $strict = false;
-                    }
-                } else {
-                    $this->setActionVerb($verb);
-                    $strict = true;
-                }
-            }
-        }
-        $this->execute($strict);
-    }
 }
