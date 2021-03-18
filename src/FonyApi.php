@@ -44,9 +44,9 @@ class FonyApi extends API
     protected $exclude_core_actions;
     protected $allowed_core_roles;
 
-    public function __construct($request, $origin, $config_file = MY_DOC_ROOT . "/src/config/config.ini")
+    public function __construct($URI, $origin, $config_file = MY_DOC_ROOT . "/src/config/config.ini")
     {
-        parent::__construct($request, $origin);
+        parent::__construct($URI, $origin);
 
         $this->config_file = ConfigurationUtils::getInstance($config_file);
         $this->exclude_core_actions = false;
@@ -55,7 +55,7 @@ class FonyApi extends API
         switch ($this->endpoint) {
             default:
                 $this->core_action = new GenericController($this->config_file);
-                $this->core_action->setRequest($request);
+                $this->core_action->setRequest($this->request);
                 break;
         }
     }

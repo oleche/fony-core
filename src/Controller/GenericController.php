@@ -8,6 +8,7 @@
 
 namespace Geekcow\FonyCore\Controller;
 
+use Geekcow\Dbcore\Entity;
 use Geekcow\FonyCore\Controller\GenericOperations\GenericCreate;
 use Geekcow\FonyCore\Controller\GenericOperations\GenericDelete;
 use Geekcow\FonyCore\Controller\GenericOperations\GenericGet;
@@ -21,9 +22,14 @@ use Geekcow\FonyCore\Helpers\AllowCore;
 class GenericController extends BaseController implements ApiMethods
 {
     /**
-     * @var
+     * @var Entity
      */
     private $model;
+
+    /**
+     * @var array
+     */
+    private $filter;
 
     /**
      * GenericController constructor.
@@ -32,6 +38,7 @@ class GenericController extends BaseController implements ApiMethods
     {
         parent::__construct();
         $this->allowed_roles = AllowCore::SYSTEM();
+        $this->filter = array();
     }
 
     //USUALLY TO CREATE
@@ -48,12 +55,16 @@ class GenericController extends BaseController implements ApiMethods
                 return false;
             }
 
-            if ($this->validateFields($_POST, $this->form_endpoint, 'POST')) {
-                $create = new GenericCreate($this->model, $this->session);
+            if ($this->validateFields($this->request, $this->form_endpoint, 'POST')) {
+                $create = new GenericCreate($this->model, $this->session, $this->request);
                 $create->create();
                 $this->response = $create->getResponse();
             }
         }
+
+        $this->filterResponse(
+            $this->filter
+        );
     }
 
     //USUALLY TO READ INFORMATION
@@ -77,10 +88,17 @@ class GenericController extends BaseController implements ApiMethods
                 $ident = $verb;
             }
             $get = new GenericGet($this->model, $this->session, $ident);
+            if ($this->session->session_level > 1){
+                $get->checkUser();
+            }
             $get->get();
             $this->response = $get->getResponse();
             $this->pagination_link = $get->getPaginationLink();
         }
+
+        $this->filterResponse(
+            $this->filter
+        );
     }
 
     //TEND TO HAVE MULTIPLE METHODS
@@ -98,13 +116,18 @@ class GenericController extends BaseController implements ApiMethods
                 return false;
             }
 
-            if ($this->validateFields($_POST, $this->form_endpoint, 'PUT')) {
+            if ($this->validateFields($this->request, $this->form_endpoint, 'PUT')) {
                 $put = new GenericPut($this->model, $this->session, $verb);
+                $put->setParameters($this->request);
                 $put->setValidationExclusion($this->allowed_roles);
                 $put->put();
                 $this->response = $put->getResponse();
             }
         }
+
+        $this->filterResponse(
+            $this->filter
+        );
     }
 
     //DELETES ONE SINGLE ENTRY
@@ -133,6 +156,10 @@ class GenericController extends BaseController implements ApiMethods
             $delete->delete();
             $this->response = $delete->getResponse();
         }
+
+        $this->filterResponse(
+            $this->filter
+        );
     }
 
     /**
@@ -141,6 +168,14 @@ class GenericController extends BaseController implements ApiMethods
     public function setModel($model)
     {
         $this->model = $model;
+    }
+
+    /**
+     * @param array $filter
+     */
+    public function setFilter(array $filter): void
+    {
+        $this->filter = $filter;
     }
 
     /**

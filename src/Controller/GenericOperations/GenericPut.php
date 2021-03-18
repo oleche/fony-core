@@ -98,7 +98,7 @@ class GenericPut extends CoreOperation
                 $model->columns[$k] = $this->custom_parameters[$k];
             } else {
                 if (isset($map['postable']) && $map['postable'] == true) {
-                    $model->columns[$k] = (isset($_POST[$k])) ? $_POST[$k] : $currentValue;
+                    $model->columns[$k] = (isset($this->parameters[$k])) ? $this->parameters[$k] : $currentValue;
                 } else {
                     $model->columns[$k] = $currentValue;
                 }

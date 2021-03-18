@@ -16,9 +16,9 @@ class GenericCreate extends CoreOperation
     private $uniqueness_keys;
     private $custom_parameters;
 
-    public function __construct($model, $session, $uniquenessKeys = null)
+    public function __construct($model, $session, $params = array(), $uniquenessKeys = null)
     {
-        parent::__construct($model, $session);
+        parent::__construct($model, $session, $params);
         $this->custom_parameters = array();
         $this->uniqueness = null;
         if (!is_null($uniquenessKeys)) {
@@ -34,7 +34,7 @@ class GenericCreate extends CoreOperation
     public function create()
     {
         //merge POST parameters with customParameters in order to validate uniqueness
-        $mergedParameteres = array_merge($_POST, $this->custom_parameters);
+        $mergedParameteres = array_merge($this->parameters, $this->custom_parameters);
 
         if (
             !is_null($this->uniqueness_keys)
@@ -71,8 +71,8 @@ class GenericCreate extends CoreOperation
             if (isset($this->custom_parameters[$k])) {
                 $this->model->columns[$k] = $this->custom_parameters[$k];
             }
-            if (isset($_POST[$k]) && isset($map['postable']) && $map['postable'] == true) {
-                $this->model->columns[$k] = $_POST[$k];
+            if (isset($this->parameters[$k]) && isset($map['postable']) && $map['postable'] == true) {
+                $this->model->columns[$k] = $this->parameters[$k];
             }
             if (isset($map['default']) && is_null($this->model->columns[$k])) {
                 $this->model->columns[$k] = $map['default'];
@@ -85,7 +85,7 @@ class GenericCreate extends CoreOperation
             }
         }
 
-        if ($hasUsernameColumn && !isset($_POST[$this->usernameKey])) {
+        if ($hasUsernameColumn && !isset($this->parameters[$this->usernameKey])) {
             $this->model->columns[$this->usernameKey] = $this->session->username;
         }
 

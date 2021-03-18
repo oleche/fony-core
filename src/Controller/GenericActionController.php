@@ -2,13 +2,31 @@
 
 namespace Geekcow\FonyCore\Controller;
 
+use Geekcow\Dbcore\Entity;
+use Geekcow\FonyCore\Controller\GenericActions\GenericDeleteActions;
+use Geekcow\FonyCore\Controller\GenericActions\GenericGetActions;
+use Geekcow\FonyCore\Controller\GenericActions\GenericPostActions;
+use Geekcow\FonyCore\Controller\GenericActions\GenericPutActions;
 use Geekcow\FonyCore\Helpers\AllowCore;
+use Geekcow\FonyCore\Utils\HashTypes;
 
 class GenericActionController extends BaseController implements ApiMethods
 {
+    /**
+     * @var CoreActions
+     */
     private $post_action;
+    /**
+     * @var CoreActions
+     */
     private $get_action;
+    /**
+     * @var CoreActions
+     */
     private $put_action;
+    /**
+     * @var CoreActions
+     */
     private $delete_action;
 
     /**
@@ -17,6 +35,10 @@ class GenericActionController extends BaseController implements ApiMethods
     public function __construct()
     {
         parent::__construct();
+        $this->post_action = new GenericPostActions();
+        $this->get_action = new GenericGetActions();
+        $this->put_action = new GenericPutActions();
+        $this->delete_action = new GenericDeleteActions();
         $this->allowed_roles = AllowCore::SYSTEM();
     }
 
@@ -87,34 +109,53 @@ class GenericActionController extends BaseController implements ApiMethods
 
     /**
      * @param mixed $post_action
+     * @param array $filter
      */
-    public function setPostAction($post_action): void
+    public function setPostAction($post_action, $filter = array()): void
     {
         $this->post_action = $post_action;
+        $this->post_action->setFilter($filter);
     }
 
     /**
      * @param mixed $get_action
+     * @param array $filter
      */
-    public function setGetAction($get_action): void
+    public function setGetAction($get_action, $filter = array()): void
     {
         $this->get_action = $get_action;
+        $this->get_action->setFilter($filter);
     }
 
     /**
      * @param mixed $put_action
+     * @param array $filter
      */
-    public function setPutAction($put_action): void
+    public function setPutAction($put_action, $filter = array()): void
     {
         $this->put_action = $put_action;
+        $this->put_action->setFilter($filter);
     }
 
     /**
      * @param mixed $delete_action
+     * @param array $filter
      */
-    public function setDeleteAction($delete_action): void
+    public function setDeleteAction($delete_action, $filter = array()): void
     {
         $this->delete_action = $delete_action;
+        $this->delete_action->setFilter($filter);
+    }
+
+    /**
+     * @param Entity $model
+     */
+    public function setModel(Entity $model): void
+    {
+        $this->post_action->setModel($model);
+        $this->get_action->setModel($model);
+        $this->put_action->setModel($model);
+        $this->delete_action->setModel($model);
     }
 
     /**
@@ -123,7 +164,7 @@ class GenericActionController extends BaseController implements ApiMethods
      */
     private function executeActionFlow(array $args, $verb, $action, $file = null): void
     {
-        if (!is_null($file)){
+        if (!is_null($file)) {
             $action->setFile($file);
         }
         $action->setSession($this->session);
@@ -133,9 +174,24 @@ class GenericActionController extends BaseController implements ApiMethods
         if (is_array($args) && empty($args)) {
             $this->setActionId($verb);
         } else {
-            $this->setActionId($verb);
-            $this->setActionVerb($args[0]);
-            $strict = true;
+            if ((count($args) > 0) && (is_numeric($args[0]))) {
+                $this->setActionId($args[0]);
+                $this->setActionVerb($verb);
+                $strict = true;
+            } else {
+                if (preg_match(HashTypes::MD5, $verb)) {
+                    $this->setActionId($verb);
+                    if ((count($args) > 0)){
+                        $this->setActionVerb($args[0]);
+                        $strict = true;
+                    }else {
+                        $strict = false;
+                    }
+                } else {
+                    $this->setActionVerb($verb);
+                    $strict = true;
+                }
+            }
         }
         $this->execute($strict);
     }

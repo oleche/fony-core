@@ -9,6 +9,7 @@
 namespace Geekcow\FonyCore;
 
 use Exception;
+use Geekcow\FonyCore\Utils\UriUtils;
 
 /**
  * CORE API Class
@@ -80,11 +81,11 @@ abstract class API
      * @throws Exception when an unexpected header for the request method appears.
      *                   The only methods allowed here are POST, GET, PUT, DELETE and OPTIONS
      */
-    public function __construct($request, $origin)
+    public function __construct($URI, $origin)
     {
         $this->processHeaders($origin);
 
-        $this->args = explode('/', rtrim($request, '/'));
+        $this->args = explode('/', rtrim($URI, '/'));
         $this->endpoint = array_shift($this->args);
         if (array_key_exists(0, $this->args) && !is_numeric($this->args[0])) {
             $this->verb = array_shift($this->args);
@@ -228,6 +229,8 @@ abstract class API
         if ($coreAction) {
             $this->action = $this->core_action;
         }
+
+        $this->action->setFormEndpoint(UriUtils::processUri($this->endpoint, $this->args, $this->verb));
 
         switch ($this->method) {
             case 'POST':

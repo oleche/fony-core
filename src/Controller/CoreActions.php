@@ -8,6 +8,7 @@
 
 namespace Geekcow\FonyCore\Controller;
 
+use Geekcow\Dbcore\Entity;
 use Geekcow\FonyCore\CoreModel\ApiForm;
 use Geekcow\FonyCore\Helpers\AllowCore;
 use Geekcow\FonyCore\Utils\SessionUtils;
@@ -23,6 +24,12 @@ class CoreActions
     protected $allowed_roles;
     protected $file;
     protected $filter;
+    protected $request;
+
+    /**
+     * @var Entity
+     */
+    protected $model;
 
     //internalDB
     private $api_form;
@@ -33,6 +40,7 @@ class CoreActions
         $this->response = array();
         $this->pagination_link = null;
         $this->filter = array();
+        $this->request = array();
     }
 
     public function setSession($session)
@@ -51,6 +59,14 @@ class CoreActions
     }
 
     /**
+     * @param Entity $model
+     */
+    public function setModel(Entity $model): void
+    {
+        $this->model = $model;
+    }
+
+    /**
      * @return array
      */
     public function getFilter(): array
@@ -65,6 +81,16 @@ class CoreActions
     {
         $this->filter = $filter;
     }
+
+    /**
+     * @param array $request
+     */
+    public function setRequest(array $request): void
+    {
+        $this->request = $request;
+    }
+
+
 
     protected function validateScope($scope)
     {
@@ -147,7 +173,7 @@ class CoreActions
                 }
             }
         } else {
-            $this->response['request'] = $_POST;
+            $this->response['request'] = $fields;
             $this->response['message'] = 'Fields definition error';
             $this->response['code'] = 500;
             return false;

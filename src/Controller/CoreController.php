@@ -13,7 +13,9 @@ use Geekcow\FonyCore\Helpers\AllowCore;
 
 abstract class CoreController
 {
-    // protected $ipp;
+    /**
+     * @var array
+     */
     protected $request;
 
     //controller vars
@@ -33,7 +35,10 @@ abstract class CoreController
         $this->api_form = new ApiForm();
     }
 
-    public function setRequest($request)
+    /**
+     * @param array $request
+     */
+    public function setRequest(array $request): void
     {
         $this->request = $request;
     }
@@ -119,7 +124,7 @@ abstract class CoreController
                 }
             }
         } else {
-            $this->response['request'] = $_POST;
+            $this->response['request'] = $fields;
             $this->response['message'] = 'Fields definition error';
             $this->response['code'] = 500;
             return false;

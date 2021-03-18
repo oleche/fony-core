@@ -5,7 +5,7 @@
     "license": "Apache-2.0",
     "keywords": ["fony", "fony-core", "api"],
     "homepage": "https://github.com/oleche/fony-core",
-    "version": "0.0.35",
+    "version": "0.0.36",
     "authors": [
         {
             "name": "Oscar Leche",

@@ -8,11 +8,15 @@
 
 namespace Geekcow\FonyCore\Controller;
 
+use Geekcow\Dbcore\Entity;
 use Geekcow\FonyCore\Helpers\AllowCore;
 use Geekcow\FonyCore\Utils\SessionUtils;
 
 class CoreOperation
 {
+    /**
+     * @var Entity
+     */
     protected $model;
     /**
      * @var SessionUtils
@@ -22,16 +26,18 @@ class CoreOperation
     protected $validationExclusion;
     protected $checkUser;
     protected $response;
+    /**
+     * @var array
+     */
+    protected $parameters;
 
     /**
      * CoreActions constructor.
-     * @param $model
-     * @param $session
-     * @param $username
-     * @param $validationExclusion
-     * @param $response
+     * @param Entity $model
+     * @param SessionUtils $session
+     * @param array $params
      */
-    public function __construct($model, $session)
+    public function __construct($model, $session, $params = array())
     {
         $this->model = $model;
         $this->session = $session;
@@ -39,6 +45,7 @@ class CoreOperation
         $this->usernameKey = 'username';
         $this->checkUser = false;
         $this->response = array();
+        $this->parameters = $params;
     }
 
     protected function validateUser($username)
@@ -77,6 +84,14 @@ class CoreOperation
     public function setValidationExclusion($validationExclusion)
     {
         $this->validationExclusion = $validationExclusion;
+    }
+
+    /**
+     * @param array $parameters
+     */
+    public function setParameters(array $parameters): void
+    {
+        $this->parameters = $parameters;
     }
 
     /**

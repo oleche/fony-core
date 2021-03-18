@@ -15,6 +15,9 @@ class BaseController extends CoreController
 {
     protected $session;
     protected $validation_fail;
+    /**
+     * @var CoreActions
+     */
     protected $action_class;
     protected $action_verb;
     protected $action_id;
@@ -38,6 +41,7 @@ class BaseController extends CoreController
     {
         $this->action_class->setSession($this->session);
         $this->action_class->setRoles($this->allowed_roles);
+        $this->action_class->setRequest($this->request);
         if ((int)method_exists($this->action_class, $this->action_verb) > 0) {
             if (!is_null($this->action_id)) {
                 $this->action_class->{$this->action_verb}($this->action_id);
