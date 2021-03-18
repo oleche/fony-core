@@ -75,6 +75,10 @@ class GenericActionController extends BaseController implements ApiMethods
     public function doPUT($args = array(), $verb = null, $file = null)
     {
         if (!$this->validation_fail) {
+            if (!$this->validateScope($this->session->session_scopes)) {
+                return false;
+            }
+
             $this->executeActionFlow($args, $verb, $this->put_action, $file);
         }
 
@@ -91,6 +95,8 @@ class GenericActionController extends BaseController implements ApiMethods
             }
 
             if (is_array($args) && empty($args)) {
+                $this->delete_action->setSession($this->session);
+                $this->delete_action->setRoles($this->allowed_roles);
                 $this->setExecutableClass($this->delete_action);
                 $this->setActionVerb($verb);
                 $this->execute();
