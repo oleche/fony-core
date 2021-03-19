@@ -23,6 +23,7 @@ class GenericGetActions extends CoreActions implements CoreActionsInterface
         if ($this->session->session_level > 1){
             $get->checkUser();
         }
+        $get->setUsernameKey($this->usernameKey);
         $get->get();
         $this->response = $get->getResponse();
         $this->pagination_link = $get->getPaginationLink();

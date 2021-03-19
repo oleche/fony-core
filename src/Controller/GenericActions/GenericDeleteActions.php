@@ -23,6 +23,7 @@ class GenericDeleteActions extends CoreActions implements CoreActionsInterface
         if ($this->session->session_level > 1) {
             $delete->checkUser();
         }
+        $delete->setUsernameKey($this->usernameKey);
         $delete->delete();
         $this->response = $delete->getResponse();
     }

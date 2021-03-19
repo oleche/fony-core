@@ -8,6 +8,9 @@
 
 namespace Geekcow\FonyCore\Utils;
 
+use Geekcow\FonyCore\FonyApi;
+use Geekcow\FonyCore\CoreModel\ApiForm;
+
 /**
  * Class ConfigurationUtils
  * @package Geekcow\FonyCore\Utils
@@ -77,6 +80,11 @@ class ConfigurationUtils
     private $fieldsMap;
 
     /**
+     * @var ApiForm
+     */
+    private $apiForm;
+
+    /**
      * The constructor is private
      * to prevent initiation with outer code.
      *
@@ -109,6 +117,20 @@ class ConfigurationUtils
 
         $this->filename = $configfile;
         $this->fieldsMap = array();
+    }
+
+    public function enableForm(ApiForm $form): ConfigurationUtils
+    {
+        $this->apiForm = $form;
+        return $this;
+    }
+
+    /**
+     * @return ApiForm
+     */
+    public function getApiForm(): ApiForm
+    {
+        return $this->apiForm;
     }
 
     /**
@@ -347,10 +369,14 @@ class ConfigurationUtils
      * @param string $configfile
      * @return ConfigurationUtils|null
      */
-    public static function getInstance($configfile = MY_DOC_ROOT . "/src/config/config.ini")
+    public static function getInstance($configfile = MY_DOC_ROOT . "/src/config/config.ini", $form = true, $formEntity = null)
     {
         if (self::$instance == null) {
-            self::$instance = new ConfigurationUtils($configfile);
+            if ($form) {
+                self::$instance = (new ConfigurationUtils($configfile))->enableForm(new ApiForm());
+            } else {
+                self::$instance = (new ConfigurationUtils($configfile))->enableForm($formEntity);
+            }
         }
 
         return self::$instance;

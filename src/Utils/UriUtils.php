@@ -9,7 +9,9 @@ class UriUtils
         $verbString = "";
         $idString = "";
         if (is_array($args) && empty($args)) {
-            $idString = "/:id";
+            if ($verb != ""){
+                $idString = "/:id";
+            }
         } else {
             if ((count($args) > 0) && (is_numeric($args[0]))) {
                 $idString = "/:id";

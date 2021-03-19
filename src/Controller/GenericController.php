@@ -57,6 +57,7 @@ class GenericController extends BaseController implements ApiMethods
 
             if ($this->validateFields($this->request, $this->form_endpoint, 'POST')) {
                 $create = new GenericCreate($this->model, $this->session, $this->request);
+                $create->setUsernameKey($this->usernameKey);
                 $create->create();
                 $this->response = $create->getResponse();
             }
@@ -91,6 +92,7 @@ class GenericController extends BaseController implements ApiMethods
             if ($this->session->session_level > 1){
                 $get->checkUser();
             }
+            $get->setUsernameKey($this->usernameKey);
             $get->get();
             $this->response = $get->getResponse();
             $this->pagination_link = $get->getPaginationLink();
@@ -120,6 +122,10 @@ class GenericController extends BaseController implements ApiMethods
                 $put = new GenericPut($this->model, $this->session, $verb);
                 $put->setParameters($this->request);
                 $put->setValidationExclusion($this->allowed_roles);
+                if ($this->session->session_level > 1){
+                    $put->checkUser();
+                }
+                $put->setUsernameKey($this->usernameKey);
                 $put->put();
                 $this->response = $put->getResponse();
             }
@@ -153,6 +159,7 @@ class GenericController extends BaseController implements ApiMethods
 
             $delete = new GenericDelete($this->model, $ident, $this->session);
             $delete->setValidationExclusion($this->allowed_roles);
+            $delete->setUsernameKey($this->usernameKey);
             $delete->delete();
             $this->response = $delete->getResponse();
         }

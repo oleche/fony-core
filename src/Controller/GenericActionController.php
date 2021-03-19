@@ -163,4 +163,12 @@ class GenericActionController extends BaseController implements ApiMethods
         $this->put_action->setModel($model);
         $this->delete_action->setModel($model);
     }
+
+    public function setFilter(array $filter): void
+    {
+        $this->post_action->setFilter($filter);
+        $this->get_action->setFilter($filter);
+        $this->put_action->setFilter($filter);
+        $this->delete_action->setFilter($filter);
+    }
 }

@@ -10,6 +10,7 @@ require 'vendor/autoload.php';
 define('MY_DOC_ROOT', __DIR__);
 define('MY_ASSET_ROOT', __DIR__);
 
+use Geekcow\FonyCore\FonyApi;
 use {PROJECTNAMESPACE}\router;
 
 // Requests from the same server don't have a HTTP_ORIGIN header
@@ -18,7 +19,10 @@ if (!array_key_exists('HTTP_ORIGIN', $_SERVER)) {
 }
 
 try {
-  $API = new Router($_REQUEST['request'], $_SERVER['HTTP_ORIGIN'], '{PROJECTCONFIGFILE}');
+  $router = new Router('{PROJECTCONFIGFILE}');
+  $API = new FonyApi($_REQUEST['request'], $router);
+  // if you want to have the origin set:
+  // $API = new FonyApi($_REQUEST['request'], $router, $_SERVER['HTTP_ORIGIN']);
   echo $API->processAPI();
 } catch (\Exception $e) {
   echo json_encode(Array('error' => $e->getMessage()));
@@ -44,15 +48,19 @@ This is an example of a `Router` class:
 namespace {PROJECTNAMESPACE};
 
 use Geekcow\FonyCore\Controller\GenericController;
-use Geekcow\FonyCore\FonyApi;
+use Geekcow\FonyCore\FonyRouter;
 use Geekcow\FonyCore\Utils\SessionUtils;
 use {PROJECTNAMESPACE}\model\TestModel;
 
-class Router extends FonyApi
+class Router extends FonyRouter
 {
-    public function __construct($request, $origin, $config_file)
+    public function __construct($config_file)
     {
-        parent::__construct($request, $origin, $config_file);
+        parent::__construct($config_file);
+    }
+    
+    public function prestageEndpoints($endpoint, $request){
+        parent::prestageEndpoints($endpoint, $request);
 
         switch ($this->endpoint) {
             case 'generic-controller-endpoint':
@@ -79,7 +87,7 @@ class Router extends FonyApi
      *
      */
     //WELCOME MESSAGE
-    protected function welcome()
+    public function welcome()
     {
         if ($this->method == 'GET') {
             return "WELCOME TO FONY PHP";
@@ -94,7 +102,7 @@ class Router extends FonyApi
      * @return JSON Authenticated response with token
      *
      */
-    protected function genericControllerEndpoint()
+    public function genericControllerEndpoint()
     {
         switch ($this->method) {
             case 'POST':
@@ -118,7 +126,7 @@ class Router extends FonyApi
      * @return JSON response
      *
      */
-    protected function genericActionableControllerEndpoint()
+    public function genericActionableControllerEndpoint()
     {
         return $this->executesCall();
     }

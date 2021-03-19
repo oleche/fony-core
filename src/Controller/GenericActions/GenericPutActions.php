@@ -24,6 +24,7 @@ class GenericPutActions extends CoreActions implements CoreActionsInterface
             if ($this->session->session_level > 1){
                 $put->checkUser();
             }
+            $put->setUsernameKey($this->usernameKey);
             $put->setParameters($this->request);
             $put->setValidationExclusion($this->allowed_roles);
             $put->put();

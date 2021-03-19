@@ -17,7 +17,6 @@ class GenericCreate extends CoreOperation
     /**
      * @var Entity
      */
-    private $model;
     private $uniqueness_keys;
     private $custom_parameters;
 

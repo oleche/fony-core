@@ -21,6 +21,7 @@ class CoreActions
      * @var SessionUtils
      */
     protected $session;
+    protected $usernameKey;
     protected $allowed_roles;
     protected $file;
     protected $filter;
@@ -100,7 +101,13 @@ class CoreActions
         $this->request = $request;
     }
 
-
+    /**
+     * @param mixed $usernameKey
+     */
+    public function setUsernameKey($usernameKey): void
+    {
+        $this->usernameKey = $usernameKey;
+    }
 
     protected function validateScope($scope)
     {
@@ -183,10 +190,11 @@ class CoreActions
                 }
             }
         } else {
-            $this->response['request'] = $fields;
-            $this->response['message'] = 'Fields definition error';
-            $this->response['code'] = 500;
-            return false;
+//            $this->response['request'] = $fields;
+//            $this->response['message'] = 'Fields definition error';
+//            $this->response['code'] = 500;
+//            return false;
+            return true;
         }
         return $rvalue;
     }

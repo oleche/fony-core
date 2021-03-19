@@ -15,6 +15,7 @@ use Geekcow\FonyCore\Utils\SessionUtils;
 class BaseController extends CoreController
 {
     protected $session;
+    protected $usernameKey;
     protected $validation_fail;
     /**
      * @var CoreActions
@@ -36,6 +37,7 @@ class BaseController extends CoreController
             $this->validation_fail = true;
             $this->response = $this->session->response;
         }
+        $this->usernameKey = 'username';
     }
 
     protected function execute($strict = false)
@@ -43,6 +45,7 @@ class BaseController extends CoreController
         $this->action_class->setSession($this->session);
         $this->action_class->setRoles($this->allowed_roles);
         $this->action_class->setRequest($this->request);
+        $this->action_class->setUsernameKey($this->usernameKey);
         $this->action_class->setFormEndpoint($this->form_endpoint);
         if ((int)method_exists($this->action_class, $this->action_verb) > 0) {
             if (!is_null($this->action_id)) {
@@ -102,6 +105,14 @@ class BaseController extends CoreController
         foreach ($filter as $value) {
             $this->removeFromArray($this->response, $value);
         }
+    }
+
+    /**
+     * @param mixed $usernameKey
+     */
+    public function setUsernameKey($usernameKey): void
+    {
+        $this->usernameKey = $usernameKey;
     }
 
     protected function filterStuff(&$array, $filters = array())

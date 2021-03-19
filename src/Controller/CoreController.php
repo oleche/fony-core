@@ -10,6 +10,7 @@ namespace Geekcow\FonyCore\Controller;
 
 use Geekcow\FonyCore\CoreModel\ApiForm;
 use Geekcow\FonyCore\Helpers\AllowCore;
+use Geekcow\FonyCore\Utils\ConfigurationUtils;
 
 abstract class CoreController
 {
@@ -32,7 +33,8 @@ abstract class CoreController
 
     public function __construct()
     {
-        $this->api_form = new ApiForm();
+        $config = ConfigurationUtils::getInstance();
+        $this->api_form = $config->getApiForm();
     }
 
     /**
@@ -124,10 +126,11 @@ abstract class CoreController
                 }
             }
         } else {
-            $this->response['request'] = $fields;
-            $this->response['message'] = 'Fields definition error';
-            $this->response['code'] = 500;
-            return false;
+//            $this->response['request'] = $fields;
+//            $this->response['message'] = 'Fields definition error';
+//            $this->response['code'] = 500;
+//            return false;
+            return true;
         }
         return $rvalue;
     }
