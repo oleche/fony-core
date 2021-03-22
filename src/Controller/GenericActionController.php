@@ -31,10 +31,11 @@ class GenericActionController extends BaseController implements ApiMethods
 
     /**
      * GenericController constructor.
+     * @param bool $with_form
      */
-    public function __construct()
+    public function __construct($with_form = false)
     {
-        parent::__construct();
+        parent::__construct($with_form);
         $this->post_action = new GenericPostActions();
         $this->get_action = new GenericGetActions();
         $this->put_action = new GenericPutActions();

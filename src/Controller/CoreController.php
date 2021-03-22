@@ -31,10 +31,12 @@ abstract class CoreController
     protected $allowed_roles;
     protected $form_endpoint;
 
-    public function __construct()
+    public function __construct($with_form = false)
     {
         $config = ConfigurationUtils::getInstance();
-        $this->api_form = $config->getApiForm();
+        if (!$with_form) {
+            $this->api_form = new ApiForm();
+        }
     }
 
     /**
@@ -44,6 +46,16 @@ abstract class CoreController
     {
         $this->request = $request;
     }
+
+    /**
+     * @param ApiForm $api_form
+     */
+    public function setApiForm(ApiForm $api_form): void
+    {
+        $this->api_form = $api_form;
+    }
+
+
 
     public function setAllowedRoles($roles)
     {

@@ -33,10 +33,11 @@ class GenericController extends BaseController implements ApiMethods
 
     /**
      * GenericController constructor.
+     * @param bool $with_form
      */
-    public function __construct()
+    public function __construct($with_form = false)
     {
-        parent::__construct();
+        parent::__construct($with_form);
         $this->allowed_roles = AllowCore::SYSTEM();
         $this->filter = array();
     }

@@ -27,9 +27,9 @@ class BaseController extends CoreController
     public $response;
     public $pagination_link = "";
 
-    public function __construct()
+    public function __construct($with_form = false)
     {
-        parent::__construct();
+        parent::__construct($with_form);
         $this->response = array();
         $this->session = SessionUtils::getInstance();
         $this->action_verb = 'default';

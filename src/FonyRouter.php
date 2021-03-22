@@ -8,6 +8,7 @@
 
 namespace Geekcow\FonyCore;
 
+use Geekcow\FonyCore\Controller\BaseController;
 use Geekcow\FonyCore\Controller\GenericController;
 use Geekcow\FonyCore\CoreModel\ApiForm;
 use Geekcow\FonyCore\Helpers\AllowCore;
@@ -68,6 +69,7 @@ abstract class FonyRouter implements FonyRouterInterface
 
     protected $endpoint;
 
+    public $headers;
     public $method;
     public $args;
     public $verb;
@@ -83,6 +85,7 @@ abstract class FonyRouter implements FonyRouterInterface
         $this->exclude_core_actions = false;
         $this->allowed_core_roles = AllowCore::SYSTEM();
         $this->request = array();
+        $this->headers = array();
     }
 
     public function prestageEndpoints($endpoint, $request){
@@ -112,6 +115,10 @@ abstract class FonyRouter implements FonyRouterInterface
     protected function setAllowedRoles($role)
     {
         $this->action->setAllowedRoles($role);
+    }
+
+    public function apiForms(){
+        return $this->executesCall(true);
     }
 
     /**
@@ -163,4 +170,8 @@ abstract class FonyRouter implements FonyRouterInterface
         return $this->response_code;
     }
 
+    public function addHeader($header)
+    {
+        $this->headers[] = $header;
+    }
 }

@@ -235,14 +235,14 @@ class FonyApi
 
         $this->router->prestageEndpoints($this->endpoint, $this->request);
 
-        if (($this->endpoint != "prestageEndpoints") && (int)method_exists($this->router, $this->endpoint) > 0) {
+        if (
+            ($this->endpoint != "prestageEndpoints") &&
+            (int)method_exists($this->router, $this->endpoint) > 0 &&
+            is_callable(array($this->router, $this->endpoint))
+        ) {
+            $this->headers = $this->router->headers;
             return $this->response($this->router->{$this->endpoint}($this->args), $this->router->getResponseCode());
         }
         return $this->response("No Endpoint: $this->endpoint", 404);
-    }
-
-    public function addHeader($header)
-    {
-        $this->headers[] = $header;
     }
 }

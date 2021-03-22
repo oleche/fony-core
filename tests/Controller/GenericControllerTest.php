@@ -25,11 +25,7 @@ class GenericControllerTest extends TestCase
         if (!defined('MY_ASSET_ROOT')) {
             define('MY_ASSET_ROOT', __DIR__);
         }
-        $mockApiForm = Mockery::mock(ApiForm::class);
-        $mockApiForm->shouldReceive('getCount')
-            ->once()
-            ->andReturn(0);
-        $config = ConfigurationUtils::getInstance("../resources/config.ini", false, $mockApiForm);
+        $config = ConfigurationUtils::getInstance("../resources/config.ini");
         $mockAuthentication = Mockery::mock(Oauth::class);
         $mockAuthentication->shouldReceive('validateBearerToken')
             ->once()
@@ -51,9 +47,14 @@ class GenericControllerTest extends TestCase
     {
         $columnsToExpect = ['value' => 'test', 'id' => 123];
         $_SERVER['HTTP_Authorization'] = "test";
-        $expectedResult = array("code"=>200,"Mockery_2_Geekcow_Dbcore_Entity"=>array($columnsToExpect));
+        $expectedResult = array("code"=>200,"Mockery_1_Geekcow_Dbcore_Entity"=>array($columnsToExpect));
         $mockEntityResult = Mockery::mock(Entity::class);
         $mockEntityResult->columns = $columnsToExpect;
+
+        $mockApiForm = Mockery::mock(ApiForm::class);
+        $mockApiForm->shouldReceive('getCount')
+            ->once()
+            ->andReturn(0);
 
         $mockEntity = Mockery::mock(Entity::class);
         $mockEntity->shouldReceive('get_mapping')
@@ -72,8 +73,9 @@ class GenericControllerTest extends TestCase
             ->once()
             ->andReturn(array($mockEntityResult));
 
-        $controller = new GenericController();
+        $controller = new GenericController(true);
         $controller->setModel($mockEntity);
+        $controller->setApiForm($mockApiForm);
         $controller->setAllowedRoles(array("test"));
         $controller->doGET(array(),"");
 
