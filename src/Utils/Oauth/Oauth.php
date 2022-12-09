@@ -84,7 +84,7 @@ class Oauth implements AuthenticatorInterface
         ) {
             $response = json_decode($this->client->getResult(), true);
             if (!isset($response['active']) || !$response['active']) {
-                $this->err = $response['message'];
+                $this->err = (isset($response['message']))?$response['message']:'AUTHENTICATION NOT AVAILABLE';
                 return false;
             }
             $this->username = $response['username'];
