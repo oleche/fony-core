@@ -65,6 +65,10 @@ class ConfigurationUtils
     /**
      * @var mixed|string
      */
+    private $auth_url_port;
+    /**
+     * @var mixed|string
+     */
     private $auth_refresh;
     /**
      * @var mixed|string
@@ -98,10 +102,12 @@ class ConfigurationUtils
             $this->auth_method = $config['fony.auth_method'];
             if ($this->auth_method != 'self') {
                 $this->auth_url = $config['fony.auth_url'];
+                $this->auth_url_port = $config['fony.auth_url_port'];
                 $this->auth_refresh = $config['fony.auth_refresh'];
                 $this->auth_validate = $config['fony.auth_validate'];
             } else {
                 $this->auth_url = "";
+                $this->auth_url_port = "";
                 $this->auth_refresh = "";
                 $this->auth_validate = "";
             }
@@ -194,6 +200,14 @@ class ConfigurationUtils
     /**
      * @return mixed|string
      */
+    public function getAuthenticationUrlPort()
+    {
+        return $this->auth_url_port;
+    }
+
+    /**
+     * @return mixed|string
+     */
     public function getAuthenticationValidateTokenEndpoint()
     {
         return $this->auth_validate;
@@ -267,6 +281,11 @@ class ConfigurationUtils
             $this->fieldsMap['fony']['fony.auth_url'] = $this->auth_url;
         } else {
             $this->auth_url = $this->fieldsMap['fony']['fony.auth_url'];
+        }
+        if (!isset($this->fieldsMap['fony']['fony.auth_url_port'])) {
+            $this->fieldsMap['fony']['fony.auth_url_port'] = $this->auth_url_port;
+        } else {
+            $this->auth_url_port = $this->fieldsMap['fony']['fony.auth_url_port'];
         }
         if (!isset($this->fieldsMap['fony']['fony.auth_validate'])) {
             $this->fieldsMap['fony']['fony.auth_validate'] = $this->auth_validate;

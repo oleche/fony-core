@@ -49,7 +49,7 @@ class OauthClient implements ApiMethods
     public function __construct()
     {
         $this->config = ConfigurationUtils::getInstance();
-        $this->port = 80;
+        $this->port = $this->config->getAuthenticationUrlPort();
         $this->host = $this->config->getAuthenticationUrl();
         $this->client_id = $this->config->getUserClient();
         $this->client_secret = $this->config->getUserSecret();
