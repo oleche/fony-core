@@ -67,7 +67,7 @@ class GenericGet extends CoreOperation
                 $orderBy = array($pk);
             }
 
-            if (is_null($this->custom_query) || trim($this->custom_query) == "") {
+            if (is_null($this->custom_query) || (is_string($this->custom_query) && trim($this->custom_query) == "")) {
                 $q_list = $this->model->fetch($query, false, $orderBy, $this->asc, $this->model->page);
             } else {
                 $q_list = $this->model->fetch($this->custom_query, false, $orderBy, $this->asc, $this->model->page);
