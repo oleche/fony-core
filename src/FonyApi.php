@@ -240,8 +240,9 @@ class FonyApi
             (int)method_exists($this->router, $this->endpoint) > 0 &&
             is_callable(array($this->router, $this->endpoint))
         ) {
+            $reponse_body = $this->router->{$this->endpoint}($this->args);
             $this->headers = $this->router->headers;
-            return $this->response($this->router->{$this->endpoint}($this->args), $this->router->getResponseCode());
+            return $this->response($response_body, $this->router->getResponseCode());
         }
         return $this->response("No Endpoint: $this->endpoint", 404);
     }
