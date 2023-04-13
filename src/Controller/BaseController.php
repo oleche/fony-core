@@ -173,8 +173,12 @@ class BaseController extends CoreController
         } else {
             if ((count($args) > 0) && (is_numeric($args[0]))) {
                 $this->setActionId($args[0]);
+                if ($verb == "") {
+                  $strict = false;
+                } else {
+                  $strict = true;
+                }
                 $this->setActionVerb($verb);
-                $strict = true;
             } else {
                 if (preg_match(HashTypes::MD5, $verb)) {
                     $this->setActionId($verb);
