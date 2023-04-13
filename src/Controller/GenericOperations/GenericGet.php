@@ -16,6 +16,7 @@ class GenericGet extends CoreOperation
     private $asc;
     private $ordering_field;
     private $custom_query;
+    private $force_custom;
 
     public function __construct($model, $session, $id = null)
     {
@@ -24,11 +25,13 @@ class GenericGet extends CoreOperation
         $this->asc = true;
         $this->ordering_field = null;
         $this->custom_query = null;
+        $this->force_custom = false;
     }
 
-    public function setCustomQuery($val = null)
+    public function setCustomQuery($val = null, $force = false)
     {
         $this->custom_query = $val;
+        $this->force_custom = $force;
     }
 
     public function setOrderingField($orderingField, $asc = false)
@@ -70,7 +73,7 @@ class GenericGet extends CoreOperation
             if (is_null($this->custom_query) || (is_string($this->custom_query) && trim($this->custom_query) == "")) {
                 $q_list = $this->model->fetch($query, false, $orderBy, $this->asc, $this->model->page);
             } else {
-                $q_list = $this->model->fetch($this->custom_query, false, $orderBy, $this->asc, $this->model->page);
+                $q_list = $this->model->fetch($this->custom_query, $this->force_custom, $orderBy, $this->asc, $this->model->page);
             }
         } else {
             if ($this->model->fetch_id(array($pk => $this->id), null, true, $query)) {
@@ -88,7 +91,8 @@ class GenericGet extends CoreOperation
             $this->response['code'] = 200;
             $this->response[$this->getClassName($this->model)] = array();
             foreach ($q_list as $k => $q_item) {
-                $this->response[$this->getClassName($this->model)][] = $q_item->columns;
+                $columns = (!is_null($q_item->columns)) ? $q_item->columns : $q_item;
+                $this->response[$this->getClassName($this->model)][] = ;
             }
         }
     }
