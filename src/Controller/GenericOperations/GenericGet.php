@@ -92,7 +92,7 @@ class GenericGet extends CoreOperation
             $this->response[$this->getClassName($this->model)] = array();
             foreach ($q_list as $k => $q_item) {
                 $columns = (!is_null($q_item->columns)) ? $q_item->columns : $q_item;
-                $this->response[$this->getClassName($this->model)][] = ;
+                $this->response[$this->getClassName($this->model)][] = $columns;
             }
         }
     }
