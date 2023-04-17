@@ -17,6 +17,7 @@ class CoreActions
 {
     public $response;
     public $pagination_link;
+    public $total_items;
     /**
      * @var SessionUtils
      */
@@ -44,6 +45,7 @@ class CoreActions
         $this->filter = array();
         $this->request = array();
         $this->form_endpoint = "";
+        $this->total_items = 0;
     }
 
     public function setSession($session)
