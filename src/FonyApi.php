@@ -149,6 +149,7 @@ class FonyApi
             case 'PUT':
                 $this->request = $this->cleanInputs($_GET);
                 $this->file = file_get_contents("php://input", FILE_USE_INCLUDE_PATH);
+                $this->cleanPutInputs();
                 break;
             default:
                 $this->response('Invalid Method', 405);
@@ -178,6 +179,17 @@ class FonyApi
             $clean_input = trim(strip_tags($data));
         }
         return $clean_input;
+    }
+
+    private function cleanPutInputs(){
+        switch ($_SERVER["CONTENT_TYPE"]) {
+            case "application/json":
+                $decoded_request = json_decode($this->file,true);
+                $this->request = (!is_null($decoded_request)) ? $decoded_request : [];
+                break;
+            default:
+                break;
+        }
     }
 
     private function response($data, $status = 200)
