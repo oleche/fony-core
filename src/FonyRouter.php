@@ -138,21 +138,21 @@ abstract class FonyRouter implements FonyRouterInterface
         switch ($this->method) {
             case 'POST':
                 $this->action->doPost($this->args, $this->verb);
-                $this->response_code = $this->action->response['code'];
+                $this->response_code = $this->action->response['code'] ?? null;
                 return $this->action->response;
             case 'GET':
                 $this->action->doGet($this->args, $this->verb);
                 $this->addHeader($this->action->pagination_link);
-                $this->response_code = $this->action->response['code'];
+                $this->response_code = $this->action->response['code'] ?? null;
                 return $this->action->response;
             case 'PUT':
-                parse_str($this->file, $_POST);
+                parse_str((string)$this->file, $_POST);
                 $this->action->doPut($this->args, $this->verb, $this->file);
-                $this->response_code = $this->action->response['code'];
+                $this->response_code = $this->action->response['code'] ?? null;
                 return $this->action->response;
             case 'DELETE':
                 $this->action->doDelete($this->args, $this->verb);
-                $this->response_code = $this->action->response['code'];
+                $this->response_code = $this->action->response['code'] ?? null;
                 return $this->action->response;
             case 'OPTIONS':
                 exit(0);

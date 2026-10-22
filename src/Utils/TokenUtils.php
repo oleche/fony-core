@@ -21,7 +21,7 @@ class TokenUtils
      */
     public static function sanitizeToken($token, $type)
     {
-        return str_replace($type, '', $token);
+        return str_replace($type, '', (string)$token);
     }
 
     /**
@@ -31,7 +31,7 @@ class TokenUtils
      */
     public static function validateTokenSanity($token, $type)
     {
-        return (strpos($token, $type) !== false);
+        return (strpos((string)$token, $type) !== false);
     }
 
     /**
@@ -65,7 +65,7 @@ class TokenUtils
         // iv - encrypt method AES-256-CBC expects 16 bytes - else you will get a warning
         $iv = substr(hash('sha256', $encryption_key), 0, 16);
 
-        $encrypted_string = openssl_encrypt(utf8_encode($pure_string), $method, $key, 0, $iv);
+        $encrypted_string = openssl_encrypt(self::latin1ToUtf8($pure_string), $method, $key, 0, $iv);
         return $encrypted_string;
     }
 
@@ -84,5 +84,47 @@ class TokenUtils
 
         $decrypted_string = openssl_decrypt($encrypted_string, $method, $key, 0, $iv);
         return $decrypted_string;
+    }
+
+    /**
+     * Same conversion as utf8_encode(), which is deprecated since PHP 8.2
+     *
+     * @param $string
+     * @return string
+     */
+    public static function latin1ToUtf8($string)
+    {
+        $string = (string)$string;
+        if (function_exists('mb_convert_encoding')) {
+            return mb_convert_encoding($string, 'UTF-8', 'ISO-8859-1');
+        }
+        $output = '';
+        $length = strlen($string);
+        for ($i = 0; $i < $length; $i++) {
+            $char = ord($string[$i]);
+            $output .= ($char < 0x80) ? $string[$i] : chr(0xC0 | ($char >> 6)) . chr(0x80 | ($char & 0x3F));
+        }
+        return $output;
+    }
+
+    /**
+     * Same conversion as utf8_decode(), which is deprecated since PHP 8.2
+     *
+     * @param $string
+     * @return string
+     */
+    public static function utf8ToLatin1($string)
+    {
+        $string = (string)$string;
+        if (function_exists('mb_convert_encoding')) {
+            return mb_convert_encoding($string, 'ISO-8859-1', 'UTF-8');
+        }
+        if (function_exists('iconv')) {
+            $converted = @iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $string);
+            if ($converted !== false) {
+                return $converted;
+            }
+        }
+        return $string;
     }
 }

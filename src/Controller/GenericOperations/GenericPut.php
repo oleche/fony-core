@@ -63,7 +63,7 @@ class GenericPut extends CoreOperation
                     array($pk => $this->id),
                     null,
                     true,
-                    "$this->usernameKey LIKE '$this->session->username'"
+                    "$this->usernameKey LIKE '{$this->session->username}'"
                 )
             ) {
                 $q_list[] = $this->model;
@@ -83,16 +83,16 @@ class GenericPut extends CoreOperation
         }
 
         if ($this->checkUser) {
-            $username = $model->columns[$this->usernameKey]['username'];
+            $username = $this->relatedValue($model->columns[$this->usernameKey] ?? null, 'username');
             if (!$this->validateUser($username)) {
                 return false;
             }
         }
 
         foreach ($theMap as $k => $map) {
-            $currentValue = $model->columns[$k];
+            $currentValue = $model->columns[$k] ?? null;
             if (isset($map['foreign'])) {
-                $currentValue = $model->columns[$k][$map['foreign'][0]];
+                $currentValue = $this->relatedValue($currentValue, $map['foreign'][0]);
             }
             if (isset($this->custom_parameters[$k])) {
                 $model->columns[$k] = $this->custom_parameters[$k];

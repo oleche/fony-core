@@ -73,7 +73,7 @@ class OauthClient implements ApiMethods
         try {
             $ch = curl_init();
             $method = "POST";
-            $endpoint = str_replace('/', '', $endpoint);
+            $endpoint = str_replace('/', '', (string)$endpoint);
             $url = "$this->host/$endpoint";
 
             curl_setopt($ch, CURLOPT_USERPWD, $this->client_id . ":" . $this->client_secret);
@@ -84,7 +84,10 @@ class OauthClient implements ApiMethods
             curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
 
             $result = curl_exec($ch);
-            curl_close($ch);
+            if (PHP_VERSION_ID < 80000) {
+                // since PHP 8 the handle is freed automatically and curl_close() is deprecated as of 8.5
+                curl_close($ch);
+            }
 
             $this->result = $result;
 

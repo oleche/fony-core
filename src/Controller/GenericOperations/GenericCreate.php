@@ -19,6 +19,7 @@ class GenericCreate extends CoreOperation
      */
     private $uniqueness_keys;
     private $custom_parameters;
+    private $uniqueness;
 
     public function __construct($model, $session, $params = array(), $uniquenessKeys = null)
     {
@@ -48,7 +49,7 @@ class GenericCreate extends CoreOperation
         }
 
         $this->response = array();
-        $pk = $this->prepareData();
+        $pk = $this->prepareData() ?? '';
 
         $id = $this->model->insert();
         if (is_numeric($id)) {

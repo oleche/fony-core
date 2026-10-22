@@ -154,13 +154,16 @@ class CoreActions
             }
         }
         $q_list = $this->api_form->fetch(" endpoint LIKE '$endpoint' AND method LIKE '$method' ");
-        if (count($q_list) > 0) {
+        if (is_array($q_list) && count($q_list) > 0) {
             $i = 0;
             foreach ($q_list as $q_item) {
                 $i++;
                 if (in_array($q_item->columns['field'], $available)) {
                     //regex validation
-                    if (!preg_match($q_item->columns['id_type']['regex'], $fields[$q_item->columns['field']])) {
+                    // non scalar values (arrays) can not match the field regex
+                    $field_value = $fields[$q_item->columns['field']];
+                    $field_regex = $q_item->columns['id_type']['regex'];
+                    if (!is_scalar($field_value) || !preg_match($field_regex, (string)$field_value)) {
                         $rvalue = false;
                         $message = array();
                         $message['field'] = $q_item->columns['field'];
@@ -171,7 +174,7 @@ class CoreActions
                     }
                     //empty validation
                     if ($q_item->columns['blank']) {
-                        if (trim($fields[$q_item->columns['field']]) == '') {
+                        if (!is_scalar($field_value) || trim((string)$field_value) == '') {
                             $rvalue = false;
                             $message = array();
                             $message['field'] = $q_item->columns['field'];

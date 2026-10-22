@@ -81,7 +81,7 @@ class GenericGet extends CoreOperation
             }
         }
 
-        if ((count($q_list) == 0) || (!$q_list)) {
+        if ((!$q_list) || (count($q_list) == 0)) {
             $this->response['type'] = 'error';
             $this->response['message'] = 'Cannot retrieve data';
             $this->response['code'] = 404;
@@ -91,7 +91,7 @@ class GenericGet extends CoreOperation
             $this->response['code'] = 200;
             $this->response[$this->getClassName($this->model)] = array();
             foreach ($q_list as $k => $q_item) {
-                $columns = (!is_null($q_item->columns)) ? $q_item->columns : $q_item;
+                $columns = (is_object($q_item) && !is_null($q_item->columns)) ? $q_item->columns : $q_item;
                 $this->response[$this->getClassName($this->model)][] = $columns;
             }
         }

@@ -158,7 +158,7 @@ class GenericController extends BaseController implements ApiMethods
                 $ident = $verb;
             }
 
-            $delete = new GenericDelete($this->model, $ident, $this->session);
+            $delete = new GenericDelete($this->model, $this->session, $ident);
             $delete->setValidationExclusion($this->allowed_roles);
             $delete->setUsernameKey($this->usernameKey);
             $delete->delete();

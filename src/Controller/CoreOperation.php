@@ -107,6 +107,18 @@ class CoreOperation
         $this->checkUser = true;
     }
 
+    /**
+     * Foreign key columns hold the related row (array) once fetched, other columns hold the value itself
+     *
+     * @param mixed $column
+     * @param string $key
+     * @return mixed
+     */
+    protected function relatedValue($column, $key)
+    {
+        return is_array($column) ? ($column[$key] ?? null) : $column;
+    }
+
     protected function getClassName($class){
         $path = explode('\\', get_class($class));
         return array_pop($path);

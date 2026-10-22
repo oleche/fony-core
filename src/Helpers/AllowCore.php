@@ -27,7 +27,10 @@ class AllowCore
      */
     public static function isAllowed($scopes, $allow)
     {
-        $set = explode(',', $scopes);
+        if (!is_array($allow)) {
+            return false;
+        }
+        $set = explode(',', (string)$scopes);
         $r_values = false;
         foreach ($set as $value) {
             $value = trim($value);

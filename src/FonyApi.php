@@ -162,7 +162,7 @@ class FonyApi
         $str = str_replace(' ', '', ucwords(str_replace('-', ' ', $string)));
 
         if (!$capitalizeFirstCharacter) {
-            $str[0] = strtolower($str[0]);
+            $str = lcfirst($str);
         }
 
         return $str;
@@ -182,7 +182,7 @@ class FonyApi
     }
 
     private function cleanPutInputs(){
-        switch ($_SERVER["CONTENT_TYPE"]) {
+        switch ($_SERVER["CONTENT_TYPE"] ?? '') {
             case "application/json":
                 $decoded_request = json_decode($this->file,true);
                 $this->request = (!is_null($decoded_request)) ? $decoded_request : [];
@@ -194,6 +194,10 @@ class FonyApi
 
     private function response($data, $status = 200)
     {
+        // Controllers that do not set a response code would otherwise produce an invalid status line
+        if (is_null($status) || $status === '') {
+            $status = 200;
+        }
         header("HTTP/1.1 " . $status . " " . $this->requestStatus($status));
         header("Access-Control-Allow-Origin: *");
         header("Access-Control-Allow-Headers: *");
@@ -222,7 +226,7 @@ class FonyApi
             500 => 'Internal Server Error',
             501 => 'Not Implemented',
         );
-        return ($status[$code]) ? $status[$code] : $status[500];
+        return $status[$code] ?? $status[500];
     }
 
     public static function returnMessage($message, $type)

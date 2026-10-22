@@ -87,11 +87,11 @@ class Oauth implements AuthenticatorInterface
                 $this->err = (isset($response['message']))?$response['message']:'AUTHENTICATION NOT AVAILABLE';
                 return false;
             }
-            $this->username = $response['username'];
-            $this->scopes = $response['scope'];
-            $this->scope_level = $response['scope_level'];
-            $this->client_id = $response['client_id'];
-            $this->expiration = $response['exp'];
+            $this->username = $response['username'] ?? null;
+            $this->scopes = $response['scope'] ?? null;
+            $this->scope_level = $response['scope_level'] ?? null;
+            $this->client_id = $response['client_id'] ?? null;
+            $this->expiration = $response['exp'] ?? null;
             return true;
         }
         $this->err = "Not completed";

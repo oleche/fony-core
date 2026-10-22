@@ -92,19 +92,19 @@ class ConfigurationUtils
         if (($config = @parse_ini_file($configfile)) == false) {
             $this->app_name = "NO CONFIG FILE FOUND";
         } else {
-            $this->app_name = $config['fony.app_name'];
-            $this->app_secret = $config['fony.app_secret'];
-            $this->user_client = $config['fony.user_client'];
-            $this->user_secret = $config['fony.user_secret'];
-            $this->file_path = $config['fony.file_path'];
-            $this->file_url = $config['fony.file_url'];
-            $this->site_url = $config['fony.site_url'];
-            $this->auth_method = $config['fony.auth_method'];
+            $this->app_name = $config['fony.app_name'] ?? null;
+            $this->app_secret = $config['fony.app_secret'] ?? null;
+            $this->user_client = $config['fony.user_client'] ?? null;
+            $this->user_secret = $config['fony.user_secret'] ?? null;
+            $this->file_path = $config['fony.file_path'] ?? null;
+            $this->file_url = $config['fony.file_url'] ?? null;
+            $this->site_url = $config['fony.site_url'] ?? null;
+            $this->auth_method = $config['fony.auth_method'] ?? null;
             if ($this->auth_method != 'self') {
-                $this->auth_url = $config['fony.auth_url'];
-                $this->auth_url_port = $config['fony.auth_url_port'];
-                $this->auth_refresh = $config['fony.auth_refresh'];
-                $this->auth_validate = $config['fony.auth_validate'];
+                $this->auth_url = $config['fony.auth_url'] ?? null;
+                $this->auth_url_port = $config['fony.auth_url_port'] ?? null;
+                $this->auth_refresh = $config['fony.auth_refresh'] ?? null;
+                $this->auth_validate = $config['fony.auth_validate'] ?? null;
             } else {
                 $this->auth_url = "";
                 $this->auth_url_port = "";

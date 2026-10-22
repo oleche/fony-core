@@ -64,7 +64,7 @@ class GenericCount extends CoreOperation
             $q_list = $this->model->count($query, $this->grouping_array);
         }
 
-        if (count($q_list) > 0) {
+        if (is_array($q_list) && count($q_list) > 0) {
             $this->response['count'] = array();
             $this->response['code'] = 200;
             foreach ($q_list as $k => $q_item) {

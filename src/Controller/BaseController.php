@@ -33,7 +33,7 @@ class BaseController extends CoreController
         $this->response = array();
         $this->session = SessionUtils::getInstance();
         $this->action_verb = 'default';
-        if (!$this->session->validateBearerToken($_SERVER['HTTP_Authorization'])) {
+        if (!$this->session->validateBearerToken($_SERVER['HTTP_Authorization'] ?? '')) {
             $this->validation_fail = true;
             $this->response = $this->session->response;
         }

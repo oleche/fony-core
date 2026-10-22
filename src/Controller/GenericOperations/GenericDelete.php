@@ -34,7 +34,7 @@ class GenericDelete extends CoreOperation
 
         if ($this->model->fetch_id(array($pk => $this->id))) {
             if ($this->checkUser) {
-                $username = $this->model->columns[$this->usernameKey]['username'];
+                $username = $this->relatedValue($this->model->columns[$this->usernameKey] ?? null, 'username');
                 if (!$this->validateUser($username)) {
                     return false;
                 }
