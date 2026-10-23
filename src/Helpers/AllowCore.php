@@ -45,8 +45,9 @@ class AllowCore
      */
     public static function denied($scopes)
     {
+        // the caller is authenticated but its scopes do not allow the action
         $response = array();
-        $response['code'] = 401;
+        $response['code'] = 403;
         $response['type'] = 'error';
         $response['message'] = 'Cannot allow action under scopes: ' . $scopes;
         return $response;

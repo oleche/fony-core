@@ -120,6 +120,10 @@ class BaseController extends CoreController
 
     protected function filterResponse($fields = array())
     {
+        // binary responses (files) have no fields to filter
+        if (!is_array($this->response)) {
+            return;
+        }
         $filter = array_merge($fields, ['password']);
         foreach ($filter as $value) {
             $this->removeFromArray($this->response, $value);

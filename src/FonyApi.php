@@ -9,6 +9,7 @@
 namespace Geekcow\FonyCore;
 
 use Exception;
+use Geekcow\FonyCore\Utils\BinaryResponse;
 use Geekcow\FonyCore\Utils\RequestUtils;
 use Geekcow\FonyCore\Utils\UriUtils;
 
@@ -207,6 +208,13 @@ class FonyApi
             }
         }
 
+        if ($data instanceof BinaryResponse) {
+            foreach ($data->getHeaders() as $header) {
+                header($header);
+            }
+            return $data->getContent();
+        }
+
         return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
     }
 
@@ -214,9 +222,13 @@ class FonyApi
     {
         $status = array(
             200 => 'OK',
+            201 => 'Created',
             202 => 'OK',
+            204 => 'No Content',
             304 => 'Not Modified',
+            400 => 'Bad Request',
             401 => 'Unauthorized',
+            403 => 'Forbidden',
             404 => 'Not Found',
             405 => 'Method Not Allowed',
             409 => 'Conflict',
@@ -227,6 +239,19 @@ class FonyApi
             501 => 'Not Implemented',
         );
         return $status[$code] ?? $status[500];
+    }
+
+    /**
+     * The code set by the router, or the one in the response when the router did not set it (endpoints that do
+     * not go through FonyRouter::executesCall(), such as routers handling pages in __call())
+     */
+    private function responseCode($response_body)
+    {
+        $code = $this->router->getResponseCode();
+        if ((is_null($code) || $code === '') && (is_array($response_body) || $response_body instanceof \ArrayAccess)) {
+            $code = $response_body['code'] ?? null;
+        }
+        return $code;
     }
 
     public static function returnMessage($message, $type)
@@ -253,12 +278,12 @@ class FonyApi
 
         if (
             ($this->endpoint != "prestageEndpoints") &&
-            (int)method_exists($this->router, $this->endpoint) > 0 &&
+            (method_exists($this->router, $this->endpoint) || method_exists($this->router, '__call')) &&
             is_callable(array($this->router, $this->endpoint))
         ) {
             $response_body = $this->router->{$this->endpoint}($this->args);
             $this->headers = $this->router->headers;
-            return $this->response($response_body, $this->router->getResponseCode());
+            return $this->response($response_body, $this->responseCode($response_body));
         }
         return $this->response("No Endpoint: $this->endpoint", 404);
     }
