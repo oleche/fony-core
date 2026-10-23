@@ -204,7 +204,10 @@ class FonyApi
         header("Access-Control-Allow-Methods: POST, GET, PUT, OPTIONS");
 
         foreach ($this->headers as $header) {
-            header($header);
+            // controllers without pagination leave an empty Link header
+            if (!is_null($header) && $header !== '') {
+                header($header);
+            }
         }
 
         return json_encode($data, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);

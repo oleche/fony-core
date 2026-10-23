@@ -64,7 +64,8 @@ class GenericGet extends CoreOperation
             $query = "$this->usernameKey = '" . $this->session->username . "' " . ((trim($query) != "") ? " AND " . $query : $query);
         }
 
-        if (is_null($this->id) || $this->id == "") {
+        // PHP 7 compared 0 == "" as true, so 0 (and false) also mean "no id" here
+        if (is_null($this->id) || in_array($this->id, ["", 0, false], true) || $this->id === 0.0) {
             $orderBy = $this->ordering_field;
             if (is_null($this->ordering_field)) {
                 $orderBy = array($pk);

@@ -5,7 +5,7 @@
     "license": "Apache-2.0",
     "keywords": ["fony", "fony-core", "api"],
     "homepage": "https://github.com/oleche/fony-core",
-    "version": "0.0.51",
+    "version": "0.0.52",
     "authors": [
         {
             "name": "Oscar Leche",
@@ -20,7 +20,7 @@
         }
     },
     "require" : {
-        "geekcow/dbcore": "~1.0.42",
+        "geekcow/dbcore": "~1.0.43",
         "psr/log": ">=1.1.3"
     },
     "require-dev": {
