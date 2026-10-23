@@ -232,6 +232,19 @@ class FonyApi
         return $status[$code] ?? $status[500];
     }
 
+    /**
+     * The code set by the router, or the one in the response when the router did not set it (endpoints that do
+     * not go through FonyRouter::executesCall(), such as routers handling pages in __call())
+     */
+    private function responseCode($response_body)
+    {
+        $code = $this->router->getResponseCode();
+        if ((is_null($code) || $code === '') && (is_array($response_body) || $response_body instanceof \ArrayAccess)) {
+            $code = $response_body['code'] ?? null;
+        }
+        return $code;
+    }
+
     public static function returnMessage($message, $type)
     {
         $response = array();
@@ -256,12 +269,12 @@ class FonyApi
 
         if (
             ($this->endpoint != "prestageEndpoints") &&
-            (int)method_exists($this->router, $this->endpoint) > 0 &&
+            (method_exists($this->router, $this->endpoint) || method_exists($this->router, '__call')) &&
             is_callable(array($this->router, $this->endpoint))
         ) {
             $response_body = $this->router->{$this->endpoint}($this->args);
             $this->headers = $this->router->headers;
-            return $this->response($response_body, $this->router->getResponseCode());
+            return $this->response($response_body, $this->responseCode($response_body));
         }
         return $this->response("No Endpoint: $this->endpoint", 404);
     }
