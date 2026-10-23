@@ -13,6 +13,7 @@ use Geekcow\FonyCore\Controller\GenericController;
 use Geekcow\FonyCore\CoreModel\ApiForm;
 use Geekcow\FonyCore\Helpers\AllowCore;
 use Geekcow\FonyCore\Utils\ConfigurationUtils;
+use Geekcow\FonyCore\Utils\RequestUtils;
 use Geekcow\FonyCore\Utils\UriUtils;
 
 /**
@@ -146,7 +147,8 @@ abstract class FonyRouter implements FonyRouterInterface
                 $this->response_code = $this->action->response['code'] ?? null;
                 return $this->action->response;
             case 'PUT':
-                parse_str((string)$this->file, $_POST);
+                // controllers read the PUT fields from $_POST
+                $_POST = RequestUtils::parseBody($this->file);
                 $this->action->doPut($this->args, $this->verb, $this->file);
                 $this->response_code = $this->action->response['code'] ?? null;
                 return $this->action->response;

@@ -120,7 +120,8 @@ class GenericController extends BaseController implements ApiMethods
             }
 
             if ($this->validateFields($this->request, $this->form_endpoint, 'PUT')) {
-                $put = new GenericPut($this->model, $this->session, $verb);
+                $ident = ((count($args) > 0) && (is_numeric($args[0]))) ? $args[0] : $verb;
+                $put = new GenericPut($this->model, $this->session, $ident);
                 $put->setParameters($this->request);
                 $put->setValidationExclusion($this->allowed_roles);
                 if ($this->session->session_level > 1){

@@ -92,7 +92,10 @@ abstract class CoreController
                 $available[] = $k;
             }
         }
-        $q_list = (array)$this->api_form->fetch(" endpoint LIKE '$endpoint' AND method LIKE '$method' ");
+        $q_list = (array)$this->api_form->fetch(" endpoint LIKE ? AND method LIKE ? ", false, null, true, 0, [
+            (string)$endpoint,
+            (string)$method
+        ]);
         if (count($q_list) > 0) {
             $i = 0;
             foreach ($q_list as $q_item) {

@@ -9,6 +9,7 @@
 namespace Geekcow\FonyCore;
 
 use Exception;
+use Geekcow\FonyCore\Utils\RequestUtils;
 use Geekcow\FonyCore\Utils\UriUtils;
 
 /**
@@ -149,7 +150,7 @@ class FonyApi
             case 'PUT':
                 $this->request = $this->cleanInputs($_GET);
                 $this->file = file_get_contents("php://input", FILE_USE_INCLUDE_PATH);
-                $this->cleanPutInputs();
+                $this->addBodyInputs();
                 break;
             default:
                 $this->response('Invalid Method', 405);
@@ -170,25 +171,21 @@ class FonyApi
 
     private function cleanInputs($data)
     {
-        $clean_input = array();
-        if (is_array($data)) {
-            foreach ($data as $k => $v) {
-                $clean_input[$k] = $this->cleanInputs($v);
-            }
-        } else {
-            $clean_input = trim(strip_tags($data));
-        }
-        return $clean_input;
+        return RequestUtils::cleanInputs($data);
     }
 
-    private function cleanPutInputs(){
-        switch ($_SERVER["CONTENT_TYPE"] ?? '') {
-            case "application/json":
-                $decoded_request = json_decode($this->file,true);
-                $this->request = (!is_null($decoded_request)) ? $decoded_request : [];
-                break;
-            default:
-                break;
+    /**
+     * PHP only parses POST bodies: the fields of PUT/DELETE bodies (JSON or url-encoded) are added over the
+     * query string ones. JSON values are kept as sent.
+     */
+    private function addBodyInputs()
+    {
+        $media_type = RequestUtils::mediaType();
+        if (RequestUtils::isJson($media_type)) {
+            $this->request = array_merge($this->request, RequestUtils::parseBody($this->file, $media_type));
+        } elseif ($media_type === 'application/x-www-form-urlencoded') {
+            $body = RequestUtils::parseBody($this->file, $media_type);
+            $this->request = array_merge($this->request, $this->cleanInputs($body));
         }
     }
 

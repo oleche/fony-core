@@ -36,12 +36,14 @@ class GenericCount extends CoreOperation
 
     public function getCount($latest = false)
     {
-        $query = $this->model->assembly_search($_GET);
+        $params = [];
+        $query = $this->model->assembly_search($_GET, $params);
 
         if (!empty($this->id)) {
             foreach ($this->id as $key => $value) {
                 $query .= (trim($query) != "") ? " AND " : "";
-                $query .= "$key = '$value'";
+                $query .= "$key = ?";
+                $params[] = $value;
             }
         }
 
@@ -53,15 +55,16 @@ class GenericCount extends CoreOperation
             if (trim($query) != "") {
                 $query .= " AND ";
             }
-            $query .= " $this->usernameKey = '" . $this->session->username . "'";
+            $query .= " $this->usernameKey = ?";
+            $params[] = $this->session->username;
         }
 
         $q_list = array();
         if ($this->total) {
-            $q_list = $this->model->count($query);
+            $q_list = $this->model->count($query, null, false, $params);
         } else {
             //array('created_at' => 'DAY(created_at)')
-            $q_list = $this->model->count($query, $this->grouping_array);
+            $q_list = $this->model->count($query, $this->grouping_array, false, $params);
         }
 
         if (is_array($q_list) && count($q_list) > 0) {

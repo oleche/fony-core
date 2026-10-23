@@ -16,6 +16,7 @@ class GenericGet extends CoreOperation
     private $asc;
     private $ordering_field;
     private $custom_query;
+    private $custom_params;
     private $force_custom;
 
     public function __construct($model, $session, $id = null)
@@ -25,13 +26,20 @@ class GenericGet extends CoreOperation
         $this->asc = true;
         $this->ordering_field = null;
         $this->custom_query = null;
+        $this->custom_params = [];
         $this->force_custom = false;
     }
 
-    public function setCustomQuery($val = null, $force = false)
+    /**
+     * @param string|\Geekcow\Dbcore\QueryBuilder|null $val WHERE conditions, or the whole query when $force is set
+     * @param bool $force runs $val as a custom query
+     * @param array $params values for the ? placeholders of a custom query
+     */
+    public function setCustomQuery($val = null, $force = false, array $params = [])
     {
         $this->custom_query = $val;
         $this->force_custom = $force;
+        $this->custom_params = $params;
     }
 
     public function setOrderingField($orderingField, $asc = false)
@@ -44,7 +52,8 @@ class GenericGet extends CoreOperation
     {
         $map = $this->model->get_mapping();
 
-        $query = $this->model->assembly_search($_GET);
+        $params = [];
+        $query = $this->model->assembly_search($_GET, $params);
 
         $this->model->set_pagination(true);
         $this->model->set_paging($this->model, $_GET);
@@ -61,7 +70,8 @@ class GenericGet extends CoreOperation
         }
 
         if ($this->checkUser) {
-            $query = "$this->usernameKey = '" . $this->session->username . "' " . ((trim($query) != "") ? " AND " . $query : $query);
+            $query = "$this->usernameKey = ? " . ((trim($query) != "") ? " AND " . $query : $query);
+            array_unshift($params, $this->session->username);
         }
 
         // PHP 7 compared 0 == "" as true, so 0 (and false) also mean "no id" here
@@ -72,12 +82,21 @@ class GenericGet extends CoreOperation
             }
 
             if (is_null($this->custom_query) || (is_string($this->custom_query) && trim($this->custom_query) == "")) {
-                $q_list = $this->model->fetch($query, false, $orderBy, $this->asc, $this->model->page);
+                $q_list = $this->model->fetch($query, false, $orderBy, $this->asc, $this->model->page, $params);
             } else {
-                $q_list = $this->model->fetch($this->custom_query, $this->force_custom, $orderBy, $this->asc, $this->model->page);
+                // custom queries are only ordered when an ordering field was set; the search parameters do not
+                // apply to them
+                $q_list = $this->model->fetch(
+                    $this->custom_query,
+                    $this->force_custom,
+                    $this->force_custom ? $this->ordering_field : $orderBy,
+                    $this->asc,
+                    $this->model->page,
+                    $this->custom_params
+                );
             }
         } else {
-            if ($this->model->fetch_id(array($pk => $this->id), null, true, $query)) {
+            if ($this->model->fetch_id(array($pk => $this->id), null, true, $query, 0, $params)) {
                 $q_list[] = $this->model;
             }
         }

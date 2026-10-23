@@ -95,18 +95,8 @@ class GenericActionController extends BaseController implements ApiMethods
                 return false;
             }
 
-            if (is_array($args) && empty($args)) {
-                $this->delete_action->setSession($this->session);
-                $this->delete_action->setRoles($this->allowed_roles);
-                $this->setExecutableClass($this->delete_action);
-                $this->setActionVerb($verb);
-                $this->execute();
-            } else {
-                $this->response['type'] = 'error';
-                $this->response['title'] = 'User';
-                $this->response['code'] = 404;
-                $this->response['message'] = "Invalid URL";
-            }
+            // same routing as the other methods: /resource/{id}, /resource/{action}/{id}, /resource/{md5}/{action}
+            $this->executeActionFlow($args, $verb, $this->delete_action);
         }
 
         $this->filterResponse(

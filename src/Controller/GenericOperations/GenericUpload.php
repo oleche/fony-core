@@ -165,7 +165,7 @@ class GenericUpload
         $validation = false;
 
         if (!is_null($mime) && trim($mime) != '') {
-            $q_list = $this->assetType->fetch(" mime LIKE '%$mime%' ");
+            $q_list = $this->assetType->fetch(" mime LIKE ? ", false, null, true, 0, ['%' . $mime . '%']);
 
             if (count($q_list) > 0) {
                 $validation = true;

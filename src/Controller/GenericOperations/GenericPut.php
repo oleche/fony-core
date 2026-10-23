@@ -63,7 +63,9 @@ class GenericPut extends CoreOperation
                     array($pk => $this->id),
                     null,
                     true,
-                    "$this->usernameKey LIKE '{$this->session->username}'"
+                    "$this->usernameKey LIKE ?",
+                    0,
+                    [$this->session->username]
                 )
             ) {
                 $q_list[] = $this->model;

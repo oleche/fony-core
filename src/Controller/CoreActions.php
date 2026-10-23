@@ -153,7 +153,10 @@ class CoreActions
                 $available[] = $k;
             }
         }
-        $q_list = $this->api_form->fetch(" endpoint LIKE '$endpoint' AND method LIKE '$method' ");
+        $q_list = $this->api_form->fetch(" endpoint LIKE ? AND method LIKE ? ", false, null, true, 0, [
+            (string)$endpoint,
+            (string)$method
+        ]);
         if (is_array($q_list) && count($q_list) > 0) {
             $i = 0;
             foreach ($q_list as $q_item) {

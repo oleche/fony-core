@@ -47,7 +47,7 @@ class BaseController extends CoreController
         $this->action_class->setRequest($this->request);
         $this->action_class->setUsernameKey($this->usernameKey);
         $this->action_class->setFormEndpoint($this->form_endpoint);
-        if ((int)method_exists($this->action_class, $this->action_verb) > 0) {
+        if ($this->isAction($this->action_verb)) {
             if (!is_null($this->action_id)) {
                 $this->action_class->{$this->action_verb}($this->action_id);
             } else {
@@ -76,6 +76,25 @@ class BaseController extends CoreController
         $this->response['code'] = 404;
         $this->response['message'] = "Invalid URL";
         return false;
+    }
+
+    /**
+     * Only public methods declared by the action class itself (not the CoreActions helpers such as setRoles()
+     * or validateFields()) can be reached from a URL
+     *
+     * @param string $name
+     * @return bool
+     */
+    protected function isAction($name)
+    {
+        if (!is_string($name) || $name === '' || !method_exists($this->action_class, $name)) {
+            return false;
+        }
+        $method = new \ReflectionMethod($this->action_class, $name);
+        return $method->isPublic()
+            && !$method->isStatic()
+            && !$method->isConstructor()
+            && !is_a(CoreActions::class, $method->getDeclaringClass()->getName(), true);
     }
 
     protected function broadcastMessage($type, $verification)
@@ -189,7 +208,11 @@ class BaseController extends CoreController
                         $strict = false;
                     }
                 } else {
+                    // /resource/{action}/{id}: the id can be any string (usernames, codes...)
                     $this->setActionVerb($verb);
+                    if ((count($args) > 0)) {
+                        $this->setActionId($args[0]);
+                    }
                     $strict = true;
                 }
             }
